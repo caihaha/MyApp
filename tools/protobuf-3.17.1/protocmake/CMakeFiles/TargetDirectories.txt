@@ -1,0 +1,14 @@
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/libprotobuf-lite.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/protoc.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/libprotoc.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/libprotobuf.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/gmock_main.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/gmock.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/tests.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/test_plugin.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/lite-test.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/lite-arena-test.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/check.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/INSTALL.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/ALL_BUILD.dir
+E:/Project/myproject/MyApp/tools/protobuf-3.17.1/protocmake/CMakeFiles/ZERO_CHECK.dir

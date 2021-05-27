@@ -9,6 +9,12 @@
 #pragma comment(lib,"ws2_32.lib")
 #include<mswsock.h>
 #include<stdio.h>
+#include<iostream>
+
+#include "test.pb.h"
+#include"EasySelectClient.hpp"
+#include"CELLStream.hpp"
+#include"CELLMsgStream.hpp"
 
 enum IO_TYPE
 {
@@ -119,7 +125,8 @@ public:
 		DWORD flags = 0;
 		ZeroMemory(&pIO_DATA->overlapped, sizeof(OVERLAPPED));
 
-		if (SOCKET_ERROR == WSARecv(pIO_DATA->sockfd, &wsBuff, 1, NULL, &flags, &pIO_DATA->overlapped, NULL))
+		auto res = WSARecv(pIO_DATA->sockfd, &wsBuff, 1, NULL, &flags, &pIO_DATA->overlapped, NULL);
+		if (SOCKET_ERROR == res)
 		{
 			int err = WSAGetLastError();
 			if (ERROR_IO_PENDING != err)
@@ -127,7 +134,9 @@ public:
 				printf("WSARecv failed with error %d\n", err);
 				return;
 			}
+			// return;
 		}
+		GetData(wsBuff.buf);
 	}
 	//向IOCP投递发送数据的任务
 	void postSend(IO_DATA_BASE* pIO_DATA)
@@ -145,8 +154,8 @@ public:
 			if (ERROR_IO_PENDING != err)
 			{
 				printf("WSASend failed with error %d\n", err);
-				return;
 			}
+			return;
 		}
 	}
 
@@ -201,6 +210,27 @@ public:
 			return false;
 		}
 		return true;
+	}
+
+	void GetData(char buff[])
+	{
+		CELLReadStream r(buff, 21);
+		r.ReadInt16();
+		char str[32];
+		auto len = r.ReadArray(str, 32);
+
+		std::string s;
+		s.append(str, 0, len);
+		len = s.length();
+		Account account;
+		if (!account.ParseFromString(s))
+		{
+			printf("ParseFromString error\n");
+			return;
+		}
+		std::cout << account.id() << std::endl;
+		std::cout << account.name() << std::endl;
+		std::cout << account.password() << std::endl;
 	}
 private:
 	//将AcceptEx函数加载内存中，调用效率更高

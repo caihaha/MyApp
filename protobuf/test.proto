@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message Account {
+    //账号
+    uint64 ID = 1;
+    //名字
+    string name = 2;
+    //密码
+    string password = 3;
+}

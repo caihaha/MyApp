@@ -4,3 +4,4 @@ temp
 .vs
 Library
 /MyClient/.vsconfig
+/tools/test

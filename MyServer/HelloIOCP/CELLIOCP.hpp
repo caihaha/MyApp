@@ -134,9 +134,7 @@ public:
 				printf("WSARecv failed with error %d\n", err);
 				return;
 			}
-			// return;
 		}
-		GetData(wsBuff.buf);
 	}
 	//向IOCP投递发送数据的任务
 	void postSend(IO_DATA_BASE* pIO_DATA)
@@ -210,27 +208,6 @@ public:
 			return false;
 		}
 		return true;
-	}
-
-	void GetData(char buff[])
-	{
-		CELLReadStream r(buff, 21);
-		r.ReadInt16();
-		char str[32];
-		auto len = r.ReadArray(str, 32);
-
-		std::string s;
-		s.append(str, 0, len);
-		len = s.length();
-		Account account;
-		if (!account.ParseFromString(s))
-		{
-			printf("ParseFromString error\n");
-			return;
-		}
-		std::cout << account.id() << std::endl;
-		std::cout << account.name() << std::endl;
-		std::cout << account.password() << std::endl;
 	}
 private:
 	//将AcceptEx函数加载内存中，调用效率更高

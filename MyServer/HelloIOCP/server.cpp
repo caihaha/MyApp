@@ -2,6 +2,27 @@
 
 #define nClient 3
 
+void GetData(char buff[])
+{
+	CELLReadStream r(buff, 21);
+	r.ReadInt16();
+	char str[32];
+	auto len = r.ReadArray(str, 32);
+
+	std::string s;
+	s.append(str, 0, len);
+	len = s.length();
+	Account account;
+	if (!account.ParseFromString(s))
+	{
+		printf("ParseFromString error\n");
+		return;
+	}
+	std::cout << account.id() << std::endl;
+	std::cout << account.name() << std::endl;
+	std::cout << account.password() << std::endl;
+}
+
 //-- 用Socket API建立简易TCP服务端
 //-- IOCP Server基础流程
 int main()
@@ -114,6 +135,7 @@ int main()
 				iocp.postAccept(ioEvent.pIoData);
 				continue;
 			}
+			GetData(ioEvent.pIoData->buffer);
 			//printf("发送数据: sockfd=%d, bytesTrans=%d msgCount=%d\n", ioEvent.pIoData->sockfd, ioEvent.bytesTrans, msgCount);
 			//9.2 向IOCP投递接收数据任务
 			iocp.postRecv(ioEvent.pIoData);

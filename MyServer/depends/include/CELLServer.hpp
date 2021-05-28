@@ -22,7 +22,7 @@ public:
 	void setId(int id)
 	{
 		_id = id;
-		_taskServer.serverId = id;
+		//_taskServer.serverId = id;
 	}
 
 	virtual void setClientNum(int nSocketNum)
@@ -39,7 +39,7 @@ public:
 	void Close()
 	{
 		CELLLog_Info("CELLServer%d.Close begin", _id);
-		_taskServer.Close();
+		//_taskServer.Close();
 		_thread.Close();
 		CELLLog_Info("CELLServer%d.Close end", _id);
 	}
@@ -183,7 +183,7 @@ public:
 
 	void Start()
 	{
-		_taskServer.Start();
+		// _taskServer.Start();
 		_thread.Start(
 			//onCreate
 			nullptr,
@@ -236,7 +236,7 @@ private:
 	//网络事件对象
 	INetEvent* _pNetEvent = nullptr;
 	//
-	CELLTaskServer _taskServer;
+	// CELLTaskServer _taskServer;
 	//旧的时间戳
 	time_t _oldTime = CELLTime::getNowInMilliSec();
 	//

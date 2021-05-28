@@ -2,12 +2,12 @@
 //#include"EasyEpollServer.hpp"
 #endif // __linux__
 
-#include"EasySelectServer.hpp"
-//#include"EasyIOCPServer.hpp"
+//#include"EasySelectServer.hpp"
+#include"EasyIOCPServer.hpp"
 #include"CELLMsgStream.hpp"
 #include"CELLConfig.hpp"
 
-class MyServer : public EasySelectServer
+class MyServer : public EasyIOCPServer
 {
 public:
 	MyServer()

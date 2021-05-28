@@ -48,7 +48,7 @@ public:
 		_clientJoin = 0;
 		_nSendBuffSize = CELLConfig::Instance().getInt("nSendBuffSize", SEND_BUFF_SZIE);
 		_nRecvBuffSize = CELLConfig::Instance().getInt("nRecvBuffSize", RECV_BUFF_SZIE);
-		_nMaxClient = CELLConfig::Instance().getInt("nMaxClient", FD_SETSIZE);
+		_nMaxClient = CELLConfig::Instance().getInt("nMaxClient", 10);
 	}
 	virtual ~EasyTcpServer()
 	{

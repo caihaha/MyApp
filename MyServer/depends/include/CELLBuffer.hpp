@@ -157,6 +157,7 @@ public:
 	}
 
 #ifdef CELL_USE_IOCP
+	// 返回接收缓冲区
 	IO_DATA_BASE* makeRecvIoData(SOCKET sockfd)
 	{
 		int nLen = _nSize - _nLast;
@@ -182,6 +183,7 @@ public:
 		return nullptr;
 	}
 
+	// 接收完数据后加缓冲区长度
 	bool read4iocp(int nRecv)
 	{
 		if (nRecv > 0 && _nSize - _nLast >= nRecv)

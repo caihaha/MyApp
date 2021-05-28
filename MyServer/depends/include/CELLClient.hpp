@@ -145,6 +145,7 @@ public:
 		return false;
 	}
 #ifdef CELL_USE_IOCP
+	// 返回接收缓冲区
 	IO_DATA_BASE* makeRecvIoData()
 	{
 		if (_isPostRecv)

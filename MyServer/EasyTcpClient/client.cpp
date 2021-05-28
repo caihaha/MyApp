@@ -266,7 +266,7 @@ int main(int argc, char *args[])
 	strIP = CELLConfig::Instance().getStr("strIP", "127.0.0.1");
 	nPort = CELLConfig::Instance().getInt("nPort", 4567);
 	nThread = CELLConfig::Instance().getInt("nThread", 1);
-	nClient = CELLConfig::Instance().getInt("nClient", 10000);
+	nClient = CELLConfig::Instance().getInt("nClient", 1);
 	nMsg = CELLConfig::Instance().getInt("nMsg", 10);
 	nSendSleep = CELLConfig::Instance().getInt("nSendSleep", 100);
 	nWorkSleep = CELLConfig::Instance().getInt("nWorkSleep", 1);
@@ -315,7 +315,7 @@ int main(int argc, char *args[])
 			sendCount = 0;
 			tTime.update();
 		}
-		CELLThread::Sleep(1);
+		CELLThread::Sleep(1000);
 	}
 	//
 	for (auto t : threads)

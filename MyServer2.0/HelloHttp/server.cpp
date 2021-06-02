@@ -39,33 +39,43 @@ public:
 			pHttpClient->resp200OK(respBodyBuff, strlen(respBodyBuff));
 		}
 		else {
-			std::string url = "E:/www";
-			url += pHttpClient->url();
-			FILE * file = fopen(url.c_str(), "rb");
-			if (file)
+			do
 			{
+				std::string url = "E:/www";
+				url += pHttpClient->url();
+				FILE* file = fopen(url.c_str(), "rb");
+				if (!file)
+					break;
 				//获取文件大小
 				fseek(file, 0, SEEK_END);
 				auto bytesize = ftell(file);
+				if (!pHttpClient->canWrite(bytesize))
+				{
+					CELLLog_Warring("file too larger! url = %s", url);
+					//关闭文件
+					fclose(file);
+					break;
+				}
+
 				rewind(file);
 				//
 				char* buff = new char[bytesize];
 				//读取
 				auto readsize = fread(buff, 1, bytesize, file);
-				if (readsize == bytesize)
+				if (readsize != bytesize)
 				{
-					pHttpClient->resp200OK(buff, readsize);
+					CELLLog_Warring("readsize != bytesize! url = %s", url.c_str());
 					//释放内存
 					delete[] buff;
 					//关闭文件
 					fclose(file);
-					return;
+					break;
 				}
-				//释放内存
+
+				pHttpClient->resp200OK(buff, readsize);
 				delete[] buff;
-				//关闭文件
 				fclose(file);
-			}
+			} while (false);
 
 			pHttpClient->resp404NotFound();
 		}

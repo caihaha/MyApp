@@ -178,6 +178,11 @@ namespace doyou {
 				}
 			}
 
+			bool canWrite(const int size)
+			{
+				return _sendBuff.canWrite(size);
+			}
+
 			void resp400BadRequest()
 			{
 				writeResponse("400 Bad Request", "Only support GET or POST.", 25);

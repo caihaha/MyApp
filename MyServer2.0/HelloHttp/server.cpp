@@ -39,9 +39,9 @@ public:
 			pHttpClient->resp200OK(respBodyBuff, strlen(respBodyBuff));
 		}
 		else {
-			std::string www = "E:/dev/www";
-			www += pHttpClient->url();
-			FILE * file = fopen(www.c_str(), "rb");
+			std::string url = "E:/www";
+			url += pHttpClient->url();
+			FILE * file = fopen(url.c_str(), "rb");
 			if (file)
 			{
 				//获取文件大小

@@ -5,3 +5,4 @@ temp
 Library
 /MyClient/.vsconfig
 /tools/test
+*.txt

@@ -39,7 +39,7 @@ public:
 			pHttpClient->resp200OK(respBodyBuff, strlen(respBodyBuff));
 		}
 		else {
-			std::string www = "D:/dev/www";
+			std::string www = "E:/dev/www";
 			www += pHttpClient->url();
 			FILE * file = fopen(www.c_str(), "rb");
 			if (file)

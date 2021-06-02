@@ -45,7 +45,7 @@ namespace doyou {
 					return 0;
 				CELLLog_Info(_recvBuff.data());
 				//偏移到消息结束位置
-				//4=strlen("\r\n\r\n")
+				//strlen("\r\n\r\n") = 4
 				temp += 4;
 				//计算http请求消息的请求行+请求头长度
 				_headerLen = temp - _recvBuff.data();

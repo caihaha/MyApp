@@ -52,7 +52,7 @@ public:
 				char* buff = new char[bytesize];
 				//╤ах║
 				auto readsize = fread(buff, 1, bytesize, file);
-				if (readsize == readsize)
+				if (readsize == bytesize)
 				{
 					pHttpClient->resp200OK(buff, readsize);
 					//йм╥едз╢Ф

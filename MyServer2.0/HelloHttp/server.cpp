@@ -39,49 +39,77 @@ public:
 			pHttpClient->resp200OK(respBodyBuff, strlen(respBodyBuff));
 		}
 		else {
-			do
+			if (!respFile(pHttpClient))
 			{
-				std::string url = "E:/www";
-				url += pHttpClient->url();
-				FILE* file = fopen(url.c_str(), "rb");
-				if (!file)
-					break;
-				//获取文件大小
-				fseek(file, 0, SEEK_END);
-				auto bytesize = ftell(file);
-				if (!pHttpClient->canWrite(bytesize))
-				{
-					CELLLog_Warring("file too larger! url = %s", url);
-					//关闭文件
-					fclose(file);
-					break;
-				}
-
-				rewind(file);
-				//
-				char* buff = new char[bytesize];
-				//读取
-				auto readsize = fread(buff, 1, bytesize, file);
-				if (readsize != bytesize)
-				{
-					CELLLog_Warring("readsize != bytesize! url = %s", url.c_str());
-					//释放内存
-					delete[] buff;
-					//关闭文件
-					fclose(file);
-					break;
-				}
-
-				pHttpClient->resp200OK(buff, readsize);
-				delete[] buff;
-				fclose(file);
-			} while (false);
-
-			pHttpClient->resp404NotFound();
+				pHttpClient->resp404NotFound();
+			}
 		}
 	}
-private:
 
+	bool respFile(HttpClient* pHttpClient)
+	{
+		std::string filePath;
+
+		if (pHttpClient->url_compre("/"))
+		{
+			filePath = _wwwRoot + pHttpClient->url() + _indexPage;
+		}
+		else {
+			filePath = _wwwRoot + pHttpClient->url();
+		}
+
+		FILE * file = fopen(filePath.c_str(), "rb");
+		if (!file)
+			return false;
+
+		//获取文件大小
+		fseek(file, 0, SEEK_END);
+		auto bytesize = ftell(file);
+		rewind(file);
+
+		//发送缓冲区是否能写入这么多数据
+		if (!pHttpClient->canWrite(bytesize))
+		{
+			CELLLog_Warring("!pHttpClient->canWrite(bytesize), url=%s", filePath.c_str());
+			fclose(file);
+			return false;
+		}
+
+		//读取
+		char* buff = new char[bytesize];
+		auto readsize = fread(buff, 1, bytesize, file);
+		if (readsize != bytesize)
+		{
+			CELLLog_Warring("readsize != bytesize, url=%s", filePath.c_str());
+			//释放内存
+			delete[] buff;
+			//关闭文件
+			fclose(file);
+			return false;
+		}
+
+		pHttpClient->resp200OK(buff, readsize);
+
+		//释放内存
+		delete[] buff;
+		//关闭文件
+		fclose(file);
+
+		return true;
+	}
+
+	void wwwRoot(const char* www)
+	{
+		_wwwRoot = www;
+	}
+
+	void indexPage(const char* index)
+	{
+		_indexPage = index;
+	}
+private:
+	std::string _wwwRoot;
+	std::string _indexPage;
 };
 
 int main(int argc, char* args[])
@@ -109,6 +137,12 @@ int main(int argc, char* args[])
 		CELLLog_Info("-ipv4");
 		server.InitSocket();
 	}
+
+	const char* wwwroot = Config::Instance().getStr("wwwroot", "");
+	const char* indexpage = Config::Instance().getStr("indexpage", "");
+	server.wwwRoot(wwwroot);
+	server.indexPage(indexpage);
+
 	server.Bind(strIP, nPort);
 	server.Listen(SOMAXCONN);
 	server.Start(nThread);

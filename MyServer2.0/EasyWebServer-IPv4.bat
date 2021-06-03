@@ -22,7 +22,7 @@ set cmd=%cmd% -checkMsgID
 ::自定义标志 未使用
 set cmd=%cmd% -p
 ::
-set cmd=%cmd% wwwroot=D:/www
+set cmd=%cmd% wwwroot=E:/www
 set cmd=%cmd% indexpage=index.html
 ::启动程序 传入参数
 HelloHttp %cmd%

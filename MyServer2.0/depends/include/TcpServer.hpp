@@ -293,7 +293,7 @@ namespace doyou {
 			{
 				_clientAccept--;
 				_clientJoin--;
-				//CELLLog_Info("client<%d> leave", pClient->sockfd());
+				CELLLog_Info("client<%d> leave", pClient->sockfd());
 			}
 			//cellServer 4 多个线程触发 不安全
 			//如果只开启1个cellServer就是安全的

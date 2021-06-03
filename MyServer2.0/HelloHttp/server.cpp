@@ -9,6 +9,7 @@ class MyServer:public TcpHttpServer
 public:
 	virtual void OnNetMsg(Server* pServer, Client* pClient, netmsg_DataHeader* header)
 	{
+		TcpServer::OnNetMsg(pServer, pClient, header);
 		HttpClient* pHttpClient = dynamic_cast<HttpClient*>(pClient);
 		if (!pHttpClient)
 			return;
@@ -62,12 +63,12 @@ public:
 		if (!file)
 			return false;
 
-		//»ñÈ¡ÎÄ¼ş´óĞ¡
+		//è·å–æ–‡ä»¶å¤§å°
 		fseek(file, 0, SEEK_END);
 		auto bytesize = ftell(file);
 		rewind(file);
 
-		//·¢ËÍ»º³åÇøÊÇ·ñÄÜĞ´ÈëÕâÃ´¶àÊı¾İ
+		//å‘é€ç¼“å†²åŒºæ˜¯å¦èƒ½å†™å…¥è¿™ä¹ˆå¤šæ•°æ®
 		if (!pHttpClient->canWrite(bytesize))
 		{
 			CELLLog_Warring("!pHttpClient->canWrite(bytesize), url=%s", filePath.c_str());
@@ -75,24 +76,24 @@ public:
 			return false;
 		}
 
-		//¶ÁÈ¡
+		//è¯»å–
 		char* buff = new char[bytesize];
 		auto readsize = fread(buff, 1, bytesize, file);
 		if (readsize != bytesize)
 		{
 			CELLLog_Warring("readsize != bytesize, url=%s", filePath.c_str());
-			//ÊÍ·ÅÄÚ´æ
+			//é‡Šæ”¾å†…å­˜
 			delete[] buff;
-			//¹Ø±ÕÎÄ¼ş
+			//å…³é—­æ–‡ä»¶
 			fclose(file);
 			return false;
 		}
 
 		pHttpClient->resp200OK(buff, readsize);
 
-		//ÊÍ·ÅÄÚ´æ
+		//é‡Šæ”¾å†…å­˜
 		delete[] buff;
-		//¹Ø±ÕÎÄ¼ş
+		//å…³é—­æ–‡ä»¶
 		fclose(file);
 
 		return true;
@@ -114,7 +115,7 @@ private:
 
 int main(int argc, char* args[])
 {
-	//ÉèÖÃÔËĞĞÈÕÖ¾Ãû³Æ
+	//è®¾ç½®è¿è¡Œæ—¥å¿—åç§°
 	Log::Instance().setLogPath("serverLog", "w", false);
 	Config::Instance().Init(argc, args);
 
@@ -147,7 +148,7 @@ int main(int argc, char* args[])
 	server.Listen(SOMAXCONN);
 	server.Start(nThread);
 
-	//ÔÚÖ÷Ïß³ÌÖĞµÈ´ıÓÃ»§ÊäÈëÃüÁî
+	//åœ¨ä¸»çº¿ç¨‹ä¸­ç­‰å¾…ç”¨æˆ·è¾“å…¥å‘½ä»¤
 	while (true)
 	{
 		char cmdBuf[256] = {};
@@ -166,17 +167,3 @@ int main(int argc, char* args[])
 
 	return 0;
 }
-
-//char htmlStr[] = 
-//"\
-//<!DOCTYPE html>\
-//<html>\
-//<head>\
-//<title>HelloWeb</title>\
-//</head>\
-//<body>\
-//    <button>GET</button>\
-//	<button>POST</button>\
-//</body>\
-//</html>\
-//";

@@ -157,8 +157,9 @@ namespace doyou {
 					int err = WSAGetLastError();
 					if (ERROR_IO_PENDING != err)
 					{
-						if (WSAECONNRESET == err)
+						if (WSAECONNRESET == err || WSAECONNABORTED == err)
 						{
+							CELLLog_Warring("WSARecv failed with error %d", err);
 							return false;
 						}
 						CELLLog_Error("WSARecv failed with error %d", err);

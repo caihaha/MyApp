@@ -23,7 +23,7 @@ namespace doyou {
 			bool DoNetEvents()
 			{
 				Client* pClient = nullptr;
-				for (auto iter = _clients.begin(); iter != _clients.end(); )
+				for (auto iter = _clients.begin(); iter != _clients.end(); iter++)
 				{
 					pClient = iter->second;
 					//需要写数据的客户端,才postSend
@@ -34,8 +34,8 @@ namespace doyou {
 						{
 							if (!_iocp.postSend(pIoData))
 							{
-								OnClientLeave(pClient);
-								iter = _clients.erase(iter);
+								pClient->postSendComplete();
+								pClient->onClose();
 								continue;
 							}
 						}
@@ -45,9 +45,8 @@ namespace doyou {
 						{
 							if (!_iocp.postRecv(pIoData))
 							{
-								OnClientLeave(pClient);
-								iter = _clients.erase(iter);
-								continue;
+								pClient->postRecvComplete();
+								pClient->onClose();
 							}
 						}
 					}
@@ -57,13 +56,11 @@ namespace doyou {
 						{
 							if (!_iocp.postRecv(pIoData))
 							{
-								OnClientLeave(pClient);
-								iter = _clients.erase(iter);
-								continue;
+								pClient->postRecvComplete();
+								pClient->onClose();
 							}
 						}
 					}
-					iter++;
 				}
 				//---
 				while (true)
@@ -101,16 +98,17 @@ namespace doyou {
 				//接收数据 完成 Completion
 				if (IO_TYPE::RECV == _ioEvent.pIoData->iotype)
 				{
-					if (_ioEvent.bytesTrans <= 0)
-					{//客户端断开处理
-					 //CELLLog_Info("rmClient sockfd=%d, IO_TYPE::RECV bytesTrans=%d", _ioEvent.pIoData->sockfd, _ioEvent.bytesTrans);
-						rmClient(_ioEvent);
-						return ret;
-					}
-					//
 					Client* pClient = (Client*)_ioEvent.data.ptr;
 					if (pClient)
 					{
+						if (_ioEvent.bytesTrans <= 0)
+						{//客户端断开处理
+						 //CELLLog_Info("rmClient sockfd=%d, IO_TYPE::RECV bytesTrans=%d", _ioEvent.pIoData->sockfd, _ioEvent.bytesTrans);
+							pClient->postRecvComplete();
+							pClient->onClose();
+							return ret;
+						}
+						//
 						pClient->recv4iocp(_ioEvent.bytesTrans);
 						OnNetRecv(pClient);
 					}
@@ -120,16 +118,19 @@ namespace doyou {
 				//发送数据 完成 Completion
 				else if (IO_TYPE::SEND == _ioEvent.pIoData->iotype)
 				{
-					if (_ioEvent.bytesTrans <= 0)
-					{//客户端断开处理
-					 //CELLLog_Info("rmClient sockfd=%d, IO_TYPE::SEND bytesTrans=%d", _ioEvent.pIoData->sockfd, _ioEvent.bytesTrans);
-						rmClient(_ioEvent);
-						return ret;
-					}
-					//
 					Client* pClient = (Client*)_ioEvent.data.ptr;
 					if (pClient)
+					{
+						if (_ioEvent.bytesTrans <= 0)
+						{//客户端断开处理
+						 //CELLLog_Info("rmClient sockfd=%d, IO_TYPE::SEND bytesTrans=%d", _ioEvent.pIoData->sockfd, _ioEvent.bytesTrans);
+							pClient->postSendComplete();
+							pClient->onClose();
+							return ret;
+						}
+						//
 						pClient->send2iocp(_ioEvent.bytesTrans);
+					}
 					//
 					//CELLLog_Info("IO_TYPE::SEND sockfd=%d, bytesTrans=%d", _ioEvent.pIoData->sockfd, _ioEvent.bytesTrans);
 				}
@@ -139,28 +140,9 @@ namespace doyou {
 				return ret;
 			}
 
-			void rmClient(Client* pClient)
-			{
-				auto iter = _clients.find(pClient->sockfd());
-				if (iter != _clients.end())
-					_clients.erase(iter);
-				//
-				OnClientLeave(pClient);
-			}
-
-			void rmClient(IO_EVENT& ioEvent)
-			{
-				Client* pClient = (Client*)_ioEvent.data.ptr;
-				if (pClient)
-					rmClient(pClient);
-			}
-
 			void OnClientJoin(Client* pClient)
 			{
 				_iocp.reg(pClient->sockfd(), pClient);
-				auto pIoData = pClient->makeRecvIoData();
-				if (pIoData)
-					_iocp.postRecv(pIoData);
 			}
 		private:
 			Iocp _iocp;

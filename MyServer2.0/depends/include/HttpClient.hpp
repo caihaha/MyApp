@@ -44,7 +44,7 @@ namespace doyou {
 				//未找到表示消息还不完整
 				if (!temp)
 					return 0;
-				CELLLog_Info(_recvBuff.data());
+				//CELLLog_Info(_recvBuff.data());
 				//偏移到消息结束位置
 				//strlen("\r\n\r\n") = 4
 				temp += 4;
@@ -157,7 +157,10 @@ namespace doyou {
 					//_args_map.clear();
 					SplitUrlArgs(_recvBuff.data() + _headerLen);
 				}
-
+				//根据请求头，做出相应处理
+				const char* str = header_getStr("Connection", "");
+				_keepalive = (0 == strcmp("keep-alive", str) || 0 == strcmp("Keep-Alive", str));
+				
 				return true;
 			}
 
@@ -299,6 +302,25 @@ namespace doyou {
 				//CELLLog_Info("Config::getInt %s=%d", argName, def);
 				return def;
 			}
+			const char* header_getStr(const char* argName, const char* def)
+			{
+				auto itr = _header_map.find(argName);
+				if (itr != _header_map.end())
+				{
+					return itr->second;
+				}
+				else {
+					return def;
+				}
+			}
+
+			virtual void onSendComplete()
+			{
+				if (!_keepalive)
+				{
+					this->onClose();
+				}
+			}
 		protected:
 			int _headerLen = 0;
 			int _bodyLen = 0;
@@ -310,6 +332,7 @@ namespace doyou {
 			char* _url_path;
 			char* _url_args;
 			char* _httpVersion;
+			bool _keepalive = false;
 		};
 	}
 }

@@ -11,6 +11,15 @@ namespace doyou {
 #define CLIENT_HREAT_DEAD_TIME 120000
 		//在间隔指定时间后才允许发送
 #define CLIENT_SEND_BUFF_TIME 200
+
+		enum ClientState
+		{
+			clientState_create = 10,
+			clientState_join,
+			clientState_run,
+			clientState_close,
+		};
+
 		//客户端数据类型
 		class Client
 		{
@@ -42,10 +51,10 @@ namespace doyou {
 			virtual ~Client()
 			{
 				//CELLLog_Info("~Client[sId=%d id=%d socket=%d]", serverId, id, (int)_sockfd);
-				destory();
+				destorySocket();
 			}
 
-			void destory()
+			void destorySocket()
 			{
 				if (INVALID_SOCKET != _sockfd)
 				{
@@ -90,8 +99,16 @@ namespace doyou {
 			int SendDataReal()
 			{
 				resetDTSend();
-				return _sendBuff.write2socket(_sockfd);
+				int ret = _sendBuff.write2socket(_sockfd);
+				//判断所有数据发送完成
+				if (_sendBuff.dataLen() == 0)
+				{
+					onSendComplete();
+				}
+				return ret;
 			}
+
+			virtual void onSendComplete(){}
 
 			//缓冲区的控制根据业务需求的差异而调整
 			//发送数据
@@ -122,6 +139,8 @@ namespace doyou {
 			//心跳检测
 			bool checkHeart(time_t dt)
 			{
+				if (isClose())
+					return true;
 				_dtHeart += dt;
 				if (_dtHeart >= CLIENT_HREAT_DEAD_TIME)
 				{
@@ -157,25 +176,44 @@ namespace doyou {
 			{
 				return _ip;
 			}
+
+			ClientState state()
+			{
+				return _clientState;
+			}
+
+			void state(ClientState state)
+			{
+				_clientState = state;
+			}
+
+			void onClose()
+			{
+				CELLLog_Info("sockfd<%d> onClose", _sockfd);
+				state(clientState_close);
+			}
+
+			bool isClose()
+			{
+				return _clientState == clientState_close;
+			}
 #ifdef CELL_USE_IOCP
 			IO_DATA_BASE* makeRecvIoData()
 			{
-				if (_isPostRecv)
+				if (_isPostRecv || isClose())
 					return nullptr;
 				_isPostRecv = true;
 				return _recvBuff.makeRecvIoData(_sockfd);
 			}
 			void recv4iocp(int nRecv)
 			{
-				if (!_isPostRecv)
-					CELLLog_Error("recv4iocp _isPostRecv is false");
-				_isPostRecv = false;
+				postRecvComplete();
 				_recvBuff.read4iocp(nRecv);
 			}
 
 			IO_DATA_BASE* makeSendIoData()
 			{
-				if (_isPostSend)
+				if (_isPostSend || isClose())
 					return nullptr;
 				_isPostSend = true;
 				return _sendBuff.makeSendIoData(_sockfd);
@@ -183,10 +221,27 @@ namespace doyou {
 
 			void send2iocp(int nSend)
 			{
+				postSendComplete();
+				_sendBuff.write2iocp(nSend);
+				//判断所有数据发送完成
+				if (_sendBuff.dataLen() == 0)
+				{
+					onSendComplete();
+				}
+			}
+
+			void postRecvComplete()
+			{
+				if (!_isPostRecv)
+					CELLLog_Error("recv4iocp _isPostRecv is false");
+				_isPostRecv = false;
+			}
+
+			void postSendComplete()
+			{
 				if (!_isPostSend)
 					CELLLog_Error("send2iocp _isPostSend is false");
 				_isPostSend = false;
-				_sendBuff.write2iocp(nSend);
 			}
 
 			bool isPostIoAction()
@@ -210,6 +265,7 @@ namespace doyou {
 			bool _isPostRecv = false;
 			bool _isPostSend = false;
 #endif
+			ClientState _clientState = clientState_create;
 		};
 	}
 }

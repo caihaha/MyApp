@@ -61,6 +61,7 @@ namespace doyou {
 							if (_pNetEvent)
 								_pNetEvent->OnNetJoin(pClient);
 							OnClientJoin(pClient);
+							pClient->state(clientState_join);
 						}
 						_clientsBuff.clear();
 						_clients_change = true;
@@ -104,7 +105,7 @@ namespace doyou {
 					{
 #ifdef CELL_USE_IOCP
 						if (pClient->isPostIoAction())
-							pClient->destory();
+							pClient->destorySocket();
 						else
 							OnClientLeave(pClient);
 #else

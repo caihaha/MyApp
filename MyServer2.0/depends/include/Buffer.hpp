@@ -105,7 +105,12 @@ namespace doyou {
 				{
 					//发送数据
 					ret = send(sockfd, _pBuff, _nLast, 0);
-					if (ret <= 0)
+					if (ret == 0)
+					{
+						CELLLog_Info("write2socket1:sockfd<%d> client socket closed.", sockfd, _nSize, _nLast, ret);
+						return SOCKET_ERROR;
+					}
+					else if (ret < 0)
 					{
 						CELLLog_PError("write2socket1:sockfd<%d> nSize<%d> nLast<%d> ret<%d>", sockfd, _nSize, _nLast, ret);
 						return SOCKET_ERROR;
@@ -133,7 +138,12 @@ namespace doyou {
 					//接收客户端数据
 					char* szRecv = _pBuff + _nLast;
 					int nLen = (int)recv(sockfd, szRecv, _nSize - _nLast, 0);
-					if (nLen <= 0)
+					if (nLen == 0)
+					{
+						CELLLog_Info("read4socket:sockfd<%d> client socket closed.", sockfd, _nSize, _nLast, nLen);
+						return SOCKET_ERROR;
+					}
+					else if (nLen < 0)
 					{
 						CELLLog_PError("read4socket:sockfd<%d> nSize<%d> nLast<%d> nLen<%d>", sockfd, _nSize, _nLast, nLen);
 						return SOCKET_ERROR;
@@ -167,7 +177,7 @@ namespace doyou {
 #ifdef CELL_USE_IOCP
 			IO_DATA_BASE* makeRecvIoData(SOCKET sockfd)
 			{
-				int nLen = _nSize - _nLast;
+				int nLen = (_nSize - _nLast) - 1;
 				if (nLen > 0)
 				{
 					_ioData.wsabuff.buf = _pBuff + _nLast;
@@ -195,6 +205,7 @@ namespace doyou {
 				if (nRecv > 0 && _nSize - _nLast >= nRecv)
 				{
 					_nLast += nRecv;
+					_pBuff[_nLast] = 0;
 					return true;
 				}
 				CELLLog_Error("read4iocp:sockfd<%d> nSize<%d> nLast<%d> nRecv<%d>", _ioData.sockfd, _nSize, _nLast, nRecv);

@@ -36,6 +36,7 @@ namespace doyou {
 			}
 			// 0 请求的消息不完整 继续等待消息
 			// -1 不支持的请求类型
+			// -2 异常请求
 			int checkHttpRequest()
 			{
 				//查找http请求消息结束标记
@@ -64,6 +65,37 @@ namespace doyou {
 					temp[3] == 'T')
 				{
 					_requestType = HttpClient::POST;
+					//POST需要计算请求体长度
+					char* p1 = strstr(_recvBuff.data(), "Content-Length: ");
+					//未找到表示格式错误
+					//返回错误码或者直接关闭客户端连接
+					if (!p1)
+						return -2;
+					//Content-Length: 1024\r\n
+					//16=strlen("Content-Length: ")
+					p1 += 16;
+					char* p2 = strchr(p1, '\r');
+					if (!p2)
+						return -2;
+					//计算数字长度
+					int n = p2 - p1;
+					//6位数 99万9999 上限100万字节， 就是1MB
+					//我们目前是靠接收缓冲区一次性接收
+					//所以POST数据上限是接收缓冲区大小减去_headerLen
+					if (n > 6)
+						return -2;
+					char lenStr[7] = {};
+					strncpy(lenStr, p1, n);
+					_bodyLen = atoi(lenStr);
+					//数据异常
+					if(_bodyLen < 0)
+						return -2;
+					//POST请求数据超过了缓冲区可接收长度
+					if (_headerLen + _bodyLen > _recvBuff.buffSize())
+						return -2;
+					//消息长度>已接收的数据长度，那么数据还没接收完
+					if (_headerLen + _bodyLen > _recvBuff.dataLen())
+						return 0;
 				}
 				else {
 					_requestType = HttpClient::UNKOWN;
@@ -118,7 +150,37 @@ namespace doyou {
 						break;
 					}
 				}
+
+				//请求体
+				if (_bodyLen > 0)
+				{
+					//_args_map.clear();
+					SplitUrlArgs(_recvBuff.data() + _headerLen);
+				}
+
 				return true;
+			}
+
+			void SplitUrlArgs(char* args)
+			{
+				SplitString ss;
+				ss.set(args);
+				while (true)
+				{
+					char* temp = ss.get('&');
+					if (temp)
+					{
+						SplitString ss2;
+						ss2.set(temp);
+						char* key = ss2.get('=');
+						char* val = ss2.get('=');
+						if (key && val)
+							_args_map[key] = val;
+					}
+					else {
+						break;
+					}
+				}
 			}
 
 			bool request_args(char* requestLine)
@@ -148,23 +210,8 @@ namespace doyou {
 				if (!_url_args)
 					return true;
 
-				ss.set(_url_args);
-				while (true)
-				{
-					char* temp = ss.get('&');
-					if (temp)
-					{
-						SplitString ss2;
-						ss2.set(temp);
-						char* key = ss2.get('=');
-						char* val = ss2.get('=');
-						if (key && val)
-							_args_map[key] = val;
-					}
-					else {
-						break;
-					}
-				}
+				_args_map.clear();
+				SplitUrlArgs(_url_args);
 
 				return true;
 			}
@@ -173,8 +220,9 @@ namespace doyou {
 			{
 				if (_headerLen > 0)
 				{
-					_recvBuff.pop(_headerLen);
+					_recvBuff.pop(_headerLen + _bodyLen);
 					_headerLen = 0;
+					_bodyLen = 0;
 				}
 			}
 
@@ -253,6 +301,7 @@ namespace doyou {
 			}
 		protected:
 			int _headerLen = 0;
+			int _bodyLen = 0;
 			std::map<std::string, char*> _header_map;
 			std::map<std::string, char*> _args_map;
 			RequestType _requestType = HttpClient::UNKOWN;

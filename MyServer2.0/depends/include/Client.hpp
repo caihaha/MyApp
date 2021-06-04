@@ -200,7 +200,7 @@ namespace doyou {
 #ifdef CELL_USE_IOCP
 			IO_DATA_BASE* makeRecvIoData()
 			{
-				if (_isPostRecv || isClose())
+				if (_isPostRecv || isClose() || _sockfd == INVALID_SOCKET)
 					return nullptr;
 				_isPostRecv = true;
 				return _recvBuff.makeRecvIoData(_sockfd);
@@ -213,7 +213,7 @@ namespace doyou {
 
 			IO_DATA_BASE* makeSendIoData()
 			{
-				if (_isPostSend || isClose())
+				if (_isPostSend || isClose() || _sockfd == INVALID_SOCKET)
 					return nullptr;
 				_isPostSend = true;
 				return _sendBuff.makeSendIoData(_sockfd);

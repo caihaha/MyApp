@@ -3,6 +3,7 @@
 
 #include"Client.hpp"
 #include"SplitString.hpp"
+#include"KeyString.hpp"
 
 namespace doyou {
 	namespace io {
@@ -46,7 +47,7 @@ namespace doyou {
 					return 0;
 				//CELLLog_Info(_recvBuff.data());
 				//偏移到消息结束位置
-				//strlen("\r\n\r\n") = 4
+				//4=strlen("\r\n\r\n")
 				temp += 4;
 				//计算http请求消息的请求行+请求头长度
 				_headerLen = temp - _recvBuff.data();
@@ -229,7 +230,7 @@ namespace doyou {
 				}
 			}
 
-			bool canWrite(const int size)
+			bool canWrite(int size)
 			{
 				return _sendBuff.canWrite(size);
 			}
@@ -262,6 +263,7 @@ namespace doyou {
 				strcat(response, "\r\n");
 				//响应头
 				strcat(response, "Content-Type: text/html;charset=UTF-8\r\n");
+				strcat(response, "Access-Control-Allow-Origin: *\r\n");
 				strcat(response, respBodyLen);
 				strcat(response, "\r\n");
 				//发送响应体
@@ -324,8 +326,8 @@ namespace doyou {
 		protected:
 			int _headerLen = 0;
 			int _bodyLen = 0;
-			std::map<std::string, char*> _header_map;
-			std::map<std::string, char*> _args_map;
+			std::map<KeyString, char*> _header_map;
+			std::map<KeyString, char*> _args_map;
 			RequestType _requestType = HttpClient::UNKOWN;
 			char* _method;
 			char* _url;

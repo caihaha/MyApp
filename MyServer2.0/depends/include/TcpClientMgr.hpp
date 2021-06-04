@@ -20,4 +20,4 @@ namespace doyou {
 #endif
 	}
 }
-#endif // !_TcpServerMgr_hpp_
+#endif // !_TcpClientMgr_hpp_

@@ -163,6 +163,7 @@
     <ClInclude Include="..\depends\include\EpollServer.hpp" />
     <ClInclude Include="..\depends\include\FDSet.hpp" />
     <ClInclude Include="..\depends\include\HttpClient.hpp" />
+    <ClInclude Include="..\depends\include\KeyString.hpp" />
     <ClInclude Include="..\depends\include\SplitString.hpp" />
     <ClInclude Include="..\depends\include\TcpHttpServer.hpp" />
     <ClInclude Include="..\depends\include\INetEvent.hpp" />

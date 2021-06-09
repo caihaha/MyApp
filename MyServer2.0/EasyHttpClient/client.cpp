@@ -121,7 +121,7 @@ private:
 			return false;
 
 		unsigned short port_ = 80;
-		if (port, strlen(port) > 0)
+		if (port && strlen(port) > 0)
 			port_ = atoi(port);
 
 		if (INVALID_SOCKET == InitSocket(af, 10240, 10240))
@@ -192,7 +192,7 @@ int main(int argc, char *args[])
 	//char hname[128] = {};
 	//gethostname(hname, 127);
 	
-	httpClient.get("https://www.dosfu.com/");
+	httpClient.get("https://www.baidu.com/");
 	//httpClient.get("https://www.baidu.com");
 	//httpClient.get("ipv4.dosfu.com");
 	//httpClient.get("ipv6.dosfu.com");

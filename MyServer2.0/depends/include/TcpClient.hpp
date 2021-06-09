@@ -38,7 +38,7 @@ namespace doyou {
 				else {
 					NetWork::make_reuseaddr(sock);
 					//CELLLog_Info("create socket<%d> success...", (int)sock);
-					_pClient = new Client(sock, sendSize, recvSize);
+					_pClient = makeClientObj(sock, sendSize, recvSize);
 					OnInitSocket();
 				}
 				return sock;
@@ -158,6 +158,11 @@ namespace doyou {
 				_scope_id_name = scope_id_name;
 			}
 		protected:
+			virtual Client* makeClientObj(SOCKET cSock, int sendSize, int recvSize)
+			{
+				return new Client(cSock, sendSize, recvSize);
+			}
+
 			virtual void OnInitSocket() {
 
 			};

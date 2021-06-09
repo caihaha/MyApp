@@ -1,11 +1,10 @@
 ﻿#ifndef _doyou_io_HttpClientC_HPP_
 #define _doyou_io_HttpClientC_HPP_
 
-#include<map>
-
 #include"Client.hpp"
 #include"SplitString.hpp"
 #include"KeyString.hpp"
+#include<map>
 
 namespace doyou {
 	namespace io {
@@ -21,19 +20,19 @@ namespace doyou {
 
 			virtual bool hasMsg()
 			{
-				//完整的http请求一定超过20字节
+				//完整的http响应消息一定超过20字节
 				if (_recvBuff.dataLen() < 20)
 					return false;
 
-				int ret = checkHttpResponse();
+				int ret = checkHttpRespone();
 				//if (ret < 0)
 				//	resp400BadRequest();
 				return ret > 0;
 			}
 			// 0 响应的消息不完整 继续等待消息
 			// -1 不支持的响应类型
-			// -2 异常请求
-			int checkHttpResponse()
+			// -2 异常响应消息
+			int checkHttpRespone()
 			{
 				//查找http响应消息结束标记
 				char* temp = strstr(_recvBuff.data(), "\r\n\r\n");
@@ -44,9 +43,9 @@ namespace doyou {
 				//偏移到消息结束位置
 				//4=strlen("\r\n\r\n")
 				temp += 4;
-				//计算http响应消息的请求行+请求头长度
+				//计算http响应消息的响应行+响应头长度
 				_headerLen = temp - _recvBuff.data();
-				//判断响应类型是否正确
+				//判断响应类型是否支持
 				temp = _recvBuff.data();
 				if (
 					temp[0] == 'H' &&
@@ -54,8 +53,7 @@ namespace doyou {
 					temp[2] == 'T' &&
 					temp[3] == 'P')
 				{
-					//Log::Info("%s", _recvBuff.data());
-					//计算响应体长度
+					//需要计算响应体长度
 					char* p1 = strstr(_recvBuff.data(), "Content-Length: ");
 					//未找到表示格式错误
 					//返回错误码或者直接关闭客户端连接
@@ -71,7 +69,7 @@ namespace doyou {
 					int n = p2 - p1;
 					//6位数 99万9999 上限100万字节， 就是1MB
 					//我们目前是靠接收缓冲区一次性接收
-					//所以数据长度上限是接收缓冲区大小减去_headerLen
+					//所以数据上限是接收缓冲区大小减去_headerLen
 					if (n > 6)
 						return -2;
 					char lenStr[7] = {};
@@ -97,19 +95,17 @@ namespace doyou {
 			
 			//解析http响应
 			//确定收到完整http响应消息的时候才能调用
-			bool getRequestInfo()
+			bool getResponeInfo()
 			{
-				//判断是否已经收到了完整请求
+				//判断是否已经收到了完整响应
 				if (_headerLen <= 0)
 					return false;
-				//清除上一个消息请求的数据
+				//清除上一个消息响应的数据
 				_header_map.clear();
 
-				char* pp = _recvBuff.data();
-				pp[_headerLen-1] = '\0';
 				SplitString ss;
 				ss.set(_recvBuff.data());
-				//请求行示例："GET /login.php?a=5 HTTP/1.1\r\n"
+				//响应行示例："GET /login.php?a=5 HTTP/1.1\r\n"
 				char* temp = ss.get("\r\n");
 				if (temp)
 				{
@@ -117,17 +113,17 @@ namespace doyou {
 					request_args(temp);
 				}
 
-				//请求头示例："Connection: Keep-Alive\r\n"
+				//响应头示例："Connection: Keep-Alive\r\n"
 				while (true)
 				{
-					//请求头每一行都有一个\r\n
+					//响应头每一行都有一个\r\n
 					temp = ss.get("\r\n");
 					if (temp)
 					{
 						//"Connection: Keep-Alive\0\n"
 						SplitString ss2;
 						ss2.set(temp);
-						//每个请求头字段都是"key: val\r\n"
+						//每个响应头字段都是"key: val\r\n"
 						char* key = ss2.get(": ");
 						char* val = ss2.get(": ");
 						if (key && val)
@@ -146,18 +142,15 @@ namespace doyou {
 				if (_bodyLen > 0)
 				{
 					//_args_map.clear();
-					//SplitUrlArgs(_recvBuff.data() + _headerLen);
-					_args_map["Content"] = _recvBuff.data() + _headerLen;
+					SplitUrlArgs(_recvBuff.data() + _headerLen);
 				}
-				//根据请求头，做出相应处理
+				//根据响应头，做出相应处理
 				const char* str = header_getStr("Connection", "");
 				_keepalive = (0 == strcmp("keep-alive", str) || 0 == strcmp("Keep-Alive", str));
 				
 				return true;
 			}
-			//解析响应内容
-			//可以是html页面
-			//不过我们只要能解析http api返回的json或者其它格式的字符串数据就可以了
+
 			void SplitUrlArgs(char* args)
 			{
 				SplitString ss;
@@ -297,19 +290,6 @@ namespace doyou {
 				//CELLLog_Info("Config::getInt %s=%d", argName, def);
 				return def;
 			}
-
-			const char* args_getStr(const char* argName, const char* def)
-			{
-				auto itr = _args_map.find(argName);
-				if (itr != _args_map.end())
-				{
-					return itr->second;
-				}
-				else {
-					return def;
-				}
-			}
-
 			const char* header_getStr(const char* argName, const char* def)
 			{
 				auto itr = _header_map.find(argName);
@@ -329,13 +309,6 @@ namespace doyou {
 					this->onClose();
 				}
 			}
-
-
-			const char* content()
-			{
-				return args_getStr("Content", nullptr);
-			}
-
 		protected:
 			int _headerLen = 0;
 			int _bodyLen = 0;

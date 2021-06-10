@@ -14,7 +14,7 @@ namespace doyou {
 				_fdWrite.create(1);
 			}
 			//处理网络消息
-			bool OnRun(int microseconds = 1)
+			virtual bool OnRun(int microseconds = 1)
 			{
 				if (isRun())
 				{

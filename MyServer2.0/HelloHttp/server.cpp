@@ -7,16 +7,8 @@ using namespace doyou::io;
 class MyServer:public TcpHttpServer
 {
 public:
-	virtual void OnNetMsg(Server* pServer, Client* pClient, netmsg_DataHeader* header)
+	virtual void OnNetMsgHttp(Server* pServer, HttpClientS* pHttpClient)
 	{
-		TcpServer::OnNetMsg(pServer, pClient, header);
-		HttpClient* pHttpClient = dynamic_cast<HttpClient*>(pClient);
-		if (!pHttpClient)
-			return;
-
-		if(!pHttpClient->getRequestInfo())
-			return;
-
 		if (pHttpClient->url_compre("/add"))
 		{
 			int a = pHttpClient->args_getInt("a", 0);
@@ -39,6 +31,24 @@ public:
 
 			pHttpClient->resp200OK(respBodyBuff, strlen(respBodyBuff));
 		}
+		else if (pHttpClient->url_compre("/jsonTest"))
+		{
+			auto tokenStr = pHttpClient->args_getStr("token", nullptr);
+			if (tokenStr)
+			{
+				//对tokenStr进行身份验证
+				auto jsonStr = pHttpClient->args_getStr("json", "no json data");
+				//使用第三方json库解析jsonStr
+				//做出相应处理
+				//反馈结果
+				pHttpClient->resp200OK(jsonStr, strlen(jsonStr));
+			}
+			else
+			{
+				auto ret = "{\"status\":\"error\"}";
+				pHttpClient->resp200OK(ret, strlen(ret));
+			}
+		}
 		else {
 			if (!respFile(pHttpClient))
 			{
@@ -47,7 +57,7 @@ public:
 		}
 	}
 
-	bool respFile(HttpClient* pHttpClient)
+	bool respFile(HttpClientS* pHttpClient)
 	{
 		std::string filePath;
 

@@ -131,5 +131,29 @@
     <ClInclude Include="..\depends\include\HttpClientC.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\depends\include\base64.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\HttpClientS.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\sha1.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\TcpWebSocketClient.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\TcpWebSocketServer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\WebSocketClientC.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\WebSocketClientS.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\include\WebSocketObj.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

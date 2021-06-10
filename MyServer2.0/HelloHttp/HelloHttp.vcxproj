@@ -154,6 +154,7 @@
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\depends\include\base64.hpp" />
     <ClInclude Include="..\depends\include\Buffer.hpp" />
     <ClInclude Include="..\depends\include\ByteStream.hpp" />
     <ClInclude Include="..\depends\include\CELL.hpp" />
@@ -164,7 +165,9 @@
     <ClInclude Include="..\depends\include\FDSet.hpp" />
     <ClInclude Include="..\depends\include\HttpClient.hpp" />
     <ClInclude Include="..\depends\include\HttpClientC.hpp" />
+    <ClInclude Include="..\depends\include\HttpClientS.hpp" />
     <ClInclude Include="..\depends\include\KeyString.hpp" />
+    <ClInclude Include="..\depends\include\sha1.hpp" />
     <ClInclude Include="..\depends\include\SplitString.hpp" />
     <ClInclude Include="..\depends\include\TcpClientMgr.hpp" />
     <ClInclude Include="..\depends\include\TcpHttpClient.hpp" />
@@ -189,8 +192,13 @@
     <ClInclude Include="..\depends\include\TcpSelectServer.hpp" />
     <ClInclude Include="..\depends\include\TcpServer.hpp" />
     <ClInclude Include="..\depends\include\TcpServerMgr.hpp" />
+    <ClInclude Include="..\depends\include\TcpWebSocketClient.hpp" />
+    <ClInclude Include="..\depends\include\TcpWebSocketServer.hpp" />
     <ClInclude Include="..\depends\include\Thread.hpp" />
     <ClInclude Include="..\depends\include\Timestamp.hpp" />
+    <ClInclude Include="..\depends\include\WebSocketClientC.hpp" />
+    <ClInclude Include="..\depends\include\WebSocketClientS.hpp" />
+    <ClInclude Include="..\depends\include\WebSocketObj.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -206,7 +206,6 @@ namespace doyou {
 				{
 					_nLast += nRecv;
 					_pBuff[_nLast] = 0;
-					CELLLog_Info("nRecv=%d\n", nRecv);
 					return true;
 				}
 				CELLLog_Error("read4iocp:sockfd<%d> nSize<%d> nLast<%d> nRecv<%d>", _ioData.sockfd, _nSize, _nLast, nRecv);

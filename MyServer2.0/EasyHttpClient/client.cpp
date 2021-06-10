@@ -19,8 +19,11 @@ public:
 		if (!pHttpClient)
 			return;
 		
-		if (!pHttpClient->getResponeInfo())
+		if (!pHttpClient->getResponseInfo())
 			return;
+
+		auto respStr = pHttpClient->content();
+		CELLLog_Info("%s\n", respStr);
 	}
 
 	void get(const char* httpurl)
@@ -59,9 +62,10 @@ public:
 			freeaddrinfo(pAddrList);
 			return ret;
 		}
+
+		char ipStr[256] = {};
 		for (auto pAddr = pAddrList; pAddr != nullptr; pAddr = pAddr->ai_next)
 		{
-			char ipStr[256] = {};
 			ret = getnameinfo(pAddr->ai_addr, pAddr->ai_addrlen, ipStr, 255, nullptr, 0, NI_NUMERICHOST);
 			if (0 != ret)
 			{
@@ -128,7 +132,7 @@ private:
 			return false;
 
 		unsigned short port_ = 80;
-		if (port && strlen(port) > 0)
+		if (port, strlen(port) > 0)
 			port_ = atoi(port);
 
 		if (INVALID_SOCKET == InitSocket(af, 10240, 102400))
@@ -191,6 +195,10 @@ private:
 
 int main(int argc, char *args[])
 {
+#if _WIN32 && _CONSOLE
+	system("chcp 65001");
+#endif
+	
 	//设置运行日志名称
 	Log::Instance().setLogPath("clientLog", "w", false);
 	Config::Instance().Init(argc, args);

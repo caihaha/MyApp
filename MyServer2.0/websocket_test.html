@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>websocket-client</title>
+</head>
+<body>
+	<button onclick="_createWebSocket()">connect</button>
+    <button onclick="_send('hello web')">send</button>
+    <button onclick="_close()">close</button>
+    <script>
+
+        function _createWebSocket() {
+            var serverAddress = 'ws://127.0.0.1:4567/test?a=1&b=2';
+            try {
+                _websocket = new WebSocket(serverAddress);
+            } catch (evt) {
+                console.log("new WebSocket error:" + evt.data);
+                return;
+            }
+
+            _websocket.onopen = _onOpen;
+            _websocket.onclose = _onClose;
+            _websocket.onmessage = _onMessage;
+            _websocket.onerror = _onError;
+        }
+
+
+        function _onOpen(evt) {
+            console.log("Connected to WebSocket server.");
+        }
+
+
+        function _onClose(evt) {
+            console.log("Disconnected");
+        }
+
+
+        function _onMessage(evt) {
+            console.log('Retrieved data from server: ' + evt.data.length+', '+evt.data);
+            //_websocket.send('hello web\n');
+        }
+
+
+        function _onError(evt) {
+            console.log('Error occured: ' + evt.data);
+        }
+
+
+        function _send(msg) {
+            var jsonObj = {
+                //msgId:1,
+                time:Date.now(),
+                data:"hello"
+            }
+            var jsonstr = JSON.stringify(jsonObj);
+            console.log(jsonstr);
+            if (_websocket.readyState == WebSocket.OPEN) {
+                _websocket.send(jsonstr);
+            } else {
+                console.log("send failed. websocket not open. please check.");
+            }
+        }
+        function _close() {
+            _websocket.close();
+        }
+    </script>
+</body>
+</html>

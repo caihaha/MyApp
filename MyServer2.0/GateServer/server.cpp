@@ -16,7 +16,7 @@ public:
 			return;
 		}
 		auto data = pWSClient->fetch_data();
-		//CELLLog_Info("websocket client say: %s", data);
+		CELLLog_Info("websocket client say: %s", data);
 		pWSClient->writeText(data, wsh.len);
 
 		//std::string resp;
@@ -27,7 +27,7 @@ public:
 		//resp += "=";
 		//pWSClient->writeText(resp.c_str(), resp.length());
 
-		pWSClient->ping();
+		// pWSClient->ping();
 	}
 private:
 

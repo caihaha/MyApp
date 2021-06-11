@@ -1,6 +1,7 @@
 #include"Log.hpp"
 #include"Config.hpp"
 #include"TcpWebSocketServer.hpp"
+#include"CJsonObject.hpp"
 
 using namespace doyou::io;
 
@@ -17,8 +18,31 @@ public:
 		}
 		auto data = pWSClient->fetch_data();
 		CELLLog_Info("websocket client say: %s", data);
-		pWSClient->writeText(data, wsh.len);
+		// pWSClient->writeText(data, wsh.len);
+		neb::CJsonObject json;
+		if (!json.Parse(data))
+		{
+			CELLLog_Error("json.Parse error %s", json.GetErrMsg().c_str());
+			return;
+		}
 
+		int msgId = 0;
+		if (!json.Get("msgId", msgId))
+		{
+			CELLLog_Error("error");
+		}
+
+		time_t time = 0;
+		if (!json.Get("time", time))
+		{
+			CELLLog_Error("error");
+		}
+
+		std::string d;
+		if (!json.Get("data", d))
+		{
+			CELLLog_Error("error");
+		}
 		//std::string resp;
 		//for (size_t i = 0; i < 130; i++)
 		//{

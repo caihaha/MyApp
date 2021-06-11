@@ -13,10 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{fda566be-75dd-411f-98f8-c98154e60f40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\depends\json\cJSON.c">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\depends\json\CJsonObject.cpp">
+      <Filter>json</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\depends\json\cJSON.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\json\CJsonObject.hpp">
+      <Filter>json</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

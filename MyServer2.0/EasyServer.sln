@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyServer", "EasyServer\EasyServer.vcxproj", "{A337C73A-B3AF-4E23-B608-8F3FE8CFEADB}"
 EndProject
@@ -9,13 +9,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyClient", "EasyClient\Ea
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloCpp", "HelloCpp\HelloCpp.vcxproj", "{462A46F7-D957-4103-B2E2-ADF8759DC75C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyHttpClient", "EasyHttpClient\EasyHttpClient.vcxproj", "{E8CD44E4-197C-4180-9B59-EAD109B63BFB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyHttpClient", "EasyHttpClient\EasyHttpClient.vcxproj", "{68A956B3-B5E4-4117-8ABA-6B87AC40530E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloHttp", "HelloHttp\HelloHttp.vcxproj", "{FCCEF8EB-17E4-4246-9A19-DAE27E491CF2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebSocketServer", "WebSocketServer\WebSocketServer.vcxproj", "{F60B98FF-DD7A-4C3B-B77E-6E80A21BAFEC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebSocketClient", "WebSocketClient\WebSocketClient.vcxproj", "{1072F478-E7B7-4611-B506-94E5B480DAA5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GateServer", "GateServer\GateServer.vcxproj", "{EBE5D3D1-8377-455B-A956-2D785D06020F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +51,14 @@ Global
 		{462A46F7-D957-4103-B2E2-ADF8759DC75C}.Release|x64.Build.0 = Release|x64
 		{462A46F7-D957-4103-B2E2-ADF8759DC75C}.Release|x86.ActiveCfg = Release|Win32
 		{462A46F7-D957-4103-B2E2-ADF8759DC75C}.Release|x86.Build.0 = Release|Win32
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Debug|x64.ActiveCfg = Debug|x64
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Debug|x64.Build.0 = Debug|x64
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Debug|x86.ActiveCfg = Debug|Win32
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Debug|x86.Build.0 = Debug|Win32
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Release|x64.ActiveCfg = Release|x64
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Release|x64.Build.0 = Release|x64
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Release|x86.ActiveCfg = Release|Win32
-		{E8CD44E4-197C-4180-9B59-EAD109B63BFB}.Release|x86.Build.0 = Release|Win32
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Debug|x64.ActiveCfg = Debug|x64
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Debug|x64.Build.0 = Debug|x64
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Debug|x86.ActiveCfg = Debug|Win32
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Debug|x86.Build.0 = Debug|Win32
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Release|x64.ActiveCfg = Release|x64
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Release|x64.Build.0 = Release|x64
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Release|x86.ActiveCfg = Release|Win32
+		{68A956B3-B5E4-4117-8ABA-6B87AC40530E}.Release|x86.Build.0 = Release|Win32
 		{FCCEF8EB-17E4-4246-9A19-DAE27E491CF2}.Debug|x64.ActiveCfg = Debug|x64
 		{FCCEF8EB-17E4-4246-9A19-DAE27E491CF2}.Debug|x64.Build.0 = Debug|x64
 		{FCCEF8EB-17E4-4246-9A19-DAE27E491CF2}.Debug|x86.ActiveCfg = Debug|Win32
@@ -81,6 +83,14 @@ Global
 		{1072F478-E7B7-4611-B506-94E5B480DAA5}.Release|x64.Build.0 = Release|x64
 		{1072F478-E7B7-4611-B506-94E5B480DAA5}.Release|x86.ActiveCfg = Release|Win32
 		{1072F478-E7B7-4611-B506-94E5B480DAA5}.Release|x86.Build.0 = Release|Win32
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Debug|x64.ActiveCfg = Debug|x64
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Debug|x64.Build.0 = Debug|x64
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Debug|x86.ActiveCfg = Debug|Win32
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Debug|x86.Build.0 = Debug|Win32
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Release|x64.ActiveCfg = Release|x64
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Release|x64.Build.0 = Release|x64
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Release|x86.ActiveCfg = Release|Win32
+		{EBE5D3D1-8377-455B-A956-2D785D06020F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

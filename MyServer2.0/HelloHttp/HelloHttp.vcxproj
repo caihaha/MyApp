@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\depends\json\cJSON.c" />
+    <ClCompile Include="..\depends\json\CJsonObject.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +201,8 @@
     <ClInclude Include="..\depends\include\WebSocketClientC.hpp" />
     <ClInclude Include="..\depends\include\WebSocketClientS.hpp" />
     <ClInclude Include="..\depends\include\WebSocketObj.hpp" />
+    <ClInclude Include="..\depends\json\cJSON.h" />
+    <ClInclude Include="..\depends\json\CJsonObject.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

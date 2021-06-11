@@ -13,10 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{a8ad41d7-ef26-477e-8c15-d03235ffe587}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\depends\json\cJSON.c">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\depends\json\CJsonObject.cpp">
+      <Filter>json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="..\depends\include\WebSocketObj.hpp">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\json\cJSON.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\json\CJsonObject.hpp">
+      <Filter>json</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

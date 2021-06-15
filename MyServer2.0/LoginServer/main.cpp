@@ -1,6 +1,6 @@
 #include"Log.hpp"
 #include"Config.hpp"
-#include"GateServer.hpp"
+#include"LoginServer.hpp"
 #include"CJsonObject.hpp"
 
 using namespace doyou::io;
@@ -8,10 +8,10 @@ using namespace doyou::io;
 int main(int argc, char* args[])
 {
 	//设置运行日志名称
-	Log::Instance().setLogPath("GateServerLog", "w", false);
+	Log::Instance().setLogPath("LoginServerLog", "w", false);
 	Config::Instance().Init(argc, args);
 
-	GateServer server;
+	LoginServer server;
 	server.Init();
 
 	//在主线程中等待用户输入命令

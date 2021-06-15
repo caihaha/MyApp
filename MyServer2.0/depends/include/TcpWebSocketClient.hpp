@@ -21,14 +21,15 @@ namespace doyou {
 		protected:
 			virtual Client* makeClientObj(SOCKET cSock, int sendSize, int recvSize)
 			{
-				return new WebSocketClientC(cSock, sendSize, recvSize);
+				_pWSClient = new WebSocketClientC(cSock, sendSize, recvSize);
+				return _pWSClient;
 			}
 
 			virtual void OnDisconnect() {
 				if (onclose)
 				{
-					WebSocketClientC* pWSClient = dynamic_cast<WebSocketClientC*>(_pClient);
-					onclose(pWSClient);
+					if(_pWSClient)
+						onclose(_pWSClient);
 				}
 			};
 		public:
@@ -114,7 +115,7 @@ namespace doyou {
 				return true;
 			}
 
-			void connect(const char* httpurl)
+			bool connect(const char* httpurl)
 			{
 				deatch_http_url(httpurl);
 				if (0 == hostname2ip(_host.c_str(), _port.c_str()))
@@ -125,7 +126,9 @@ namespace doyou {
 					_cKey = Base64Encode((const unsigned char*)_cKey.c_str(), _cKey.length());
 
 					url2get(_host.c_str(), _path.c_str(), _args.c_str());
+					return true;
 				}
+				return false;
 			}
 
 			int hostname2ip(const char* hostname, const char* port)
@@ -192,6 +195,22 @@ namespace doyou {
 
 				freeaddrinfo(pAddrList);
 				return ret;
+			}
+
+			int writeText(const char* pData, int len)
+			{
+				if(_pWSClient)
+					return _pWSClient->writeText(pData, len);
+			}
+
+			void send_buff_size(int n)
+			{
+				_nSendBuffSize = n;
+			}
+
+			void recv_buff_size(int n)
+			{
+				_nRecvBuffSize = n;
 			}
 
 		private:
@@ -302,6 +321,10 @@ namespace doyou {
 			////
 			std::string _cKey;
 			//
+			WebSocketClientC* _pWSClient = NULL;
+
+			int _nSendBuffSize = SEND_BUFF_SZIE;
+			int _nRecvBuffSize = RECV_BUFF_SZIE;
 		public:
 			typedef std::function<void(WebSocketClientC*)> EventCall;
 			EventCall onopen = nullptr;

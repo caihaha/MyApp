@@ -1,6 +1,6 @@
 #include"Log.hpp"
 #include"Config.hpp"
-#include"INetServer.hpp"
+#include"GateServer.hpp"
 #include"CJsonObject.hpp"
 
 using namespace doyou::io;
@@ -11,7 +11,7 @@ int main(int argc, char* args[])
 	Log::Instance().setLogPath("serverLog", "w", false);
 	Config::Instance().Init(argc, args);
 
-	INetServer server;
+	GateServer server;
 	server.Init();
 
 	//在主线程中等待用户输入命令

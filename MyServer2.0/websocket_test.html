@@ -48,9 +48,10 @@
 
         function _send(msg) {
             var jsonObj = {
-                //msgId:1,
+                msgId:1,
                 time:Date.now(),
-                data:"hello"
+                data:"hello",
+                cmd:"cs_msg_heart",
             }
             var jsonstr = JSON.stringify(jsonObj);
             console.log(jsonstr);

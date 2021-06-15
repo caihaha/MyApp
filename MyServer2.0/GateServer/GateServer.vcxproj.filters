@@ -35,5 +35,8 @@
     <ClInclude Include="..\depends\json\CJsonObject.hpp">
       <Filter>json</Filter>
     </ClInclude>
+    <ClInclude Include="..\depends\include\GateServer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -156,6 +156,7 @@
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\depends\include\GateServer.hpp" />
     <ClInclude Include="..\depends\json\cJSON.h" />
     <ClInclude Include="..\depends\json\CJsonObject.hpp" />
   </ItemGroup>

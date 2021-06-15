@@ -84,7 +84,7 @@ namespace doyou {
 				WebSocketHeader& wsh = pWSClient->WebsocketHeader();
 				if (wsh.opcode == opcode_PONG)
 				{
-					CELLLog_Info("websocket server say: PONG");
+					// CELLLog_Info("websocket client say: PONG");
 					return;
 				}
 				auto data = pWSClient->fetch_data();
@@ -97,10 +97,18 @@ namespace doyou {
 					return;
 				}
 
-				std::string cmd;
-				if (!json.Get("msgId", cmd))
+				int msgId;
+				if (!json.Get("msgId", msgId))
 				{
 					CELLLog_Error("error");
+					return;
+				}
+
+				std::string cmd;
+				if (!json.Get("cmd", cmd))
+				{
+					CELLLog_Error("error");
+					return;
 				}
 
 				time_t time = 0;

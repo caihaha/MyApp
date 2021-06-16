@@ -14,20 +14,26 @@ int main(int argc, char* args[])
 	LoginServer server;
 	server.Init();
 
-	//在主线程中等待用户输入命令
 	while (true)
 	{
-		char cmdBuf[256] = {};
-		scanf("%s", cmdBuf);
-		if (0 == strcmp(cmdBuf, "exit"))
-		{
-			server.Close();
-			break;
-		}
-		else {
-			CELLLog_Info("undefine cmd");
-		}
+		server.Run();
 	}
+
+	server.Close();
+	//在主线程中等待用户输入命令
+	//while (true)
+	//{
+	//	char cmdBuf[256] = {};
+	//	scanf("%s", cmdBuf);
+	//	if (0 == strcmp(cmdBuf, "exit"))
+	//	{
+	//		server.Close();
+	//		break;
+	//	}
+	//	else {
+	//		CELLLog_Info("undefine cmd");
+	//	}
+	//}
 
 	CELLLog_Info("exit.");
 

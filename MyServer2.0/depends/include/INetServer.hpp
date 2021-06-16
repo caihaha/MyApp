@@ -136,12 +136,12 @@ namespace doyou {
 				// pWSClient->ping();
 			}
 
-			void reg_msg_call(std::string cmd, NetEventCall call)
+			void reg_msg_call(const std::string &cmd, NetEventCall call)
 			{
 				_map_msg_call[cmd] = call;
 			}
 
-			bool on_net_msg_do(Server* pServer, INetClientS* pClient, std::string cmd, neb::CJsonObject& msgJson)
+			bool on_net_msg_do(Server* pServer, INetClientS* pClient, const std::string &cmd, neb::CJsonObject& msgJson)
 			{
 				auto iter = _map_msg_call.find(cmd);
 				if (iter != _map_msg_call.end())

@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\depends\include\INetClient.hpp" />
+    <ClInclude Include="..\depends\include\INetServer.hpp" />
     <ClInclude Include="..\depends\include\LoginServer.hpp" />
     <ClInclude Include="..\depends\json\cJSON.h" />
     <ClInclude Include="..\depends\json\CJsonObject.hpp" />

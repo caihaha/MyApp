@@ -105,14 +105,20 @@ namespace doyou {
 					{
 #ifdef CELL_USE_IOCP
 						if (pClient->isPostIoAction())
+						{
 							pClient->destorySocket();
+						}
 						else
+						{
 							OnClientLeave(pClient);
+							iter = _clients.erase(iter);
+							continue;
+						}
 #else
 						OnClientLeave(pClient);
-#endif // CELL_USE_IOCP
 						iter = _clients.erase(iter);
 						continue;
+#endif // CELL_USE_IOCP
 					}
 
 					////定时发送检测

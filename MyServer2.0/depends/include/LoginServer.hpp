@@ -9,14 +9,15 @@ namespace doyou {
 		{
 		private:
 			INetClient _csGate;
-
 		public:
 			void Init()
 			{
 				_csGate.connect("csGate", "127.0.0.1:4567");
-				_csGate.reg_msg_call("cs_msg_login", std::bind(&LoginServer::cs_msg_login, this, std::placeholders::_1, std::placeholders::_2));
-				_csGate.reg_msg_call("cs_msg_heart", std::bind(&LoginServer::cs_msg_heart, this, std::placeholders::_1, std::placeholders::_2));
+
 				_csGate.reg_msg_call("onopen", std::bind(&LoginServer::onopen_csGate, this, std::placeholders::_1, std::placeholders::_2));
+
+				_csGate.reg_msg_call("cs_msg_heart", std::bind(&LoginServer::cs_msg_heart, this,std::placeholders::_1, std::placeholders::_2));
+				_csGate.reg_msg_call("cs_msg_login", std::bind(&LoginServer::cs_msg_login, this, std::placeholders::_1, std::placeholders::_2));
 			}
 
 			void Run()
@@ -32,38 +33,32 @@ namespace doyou {
 		private:
 			void onopen_csGate(INetClient* client, neb::CJsonObject& msg)
 			{
-				neb::CJsonObject tmp;
-				tmp.Add("type", "LoginServer");
-				tmp.Add("name", "LoginServer001");
-				client->request("ss_reg_api", tmp);
+				neb::CJsonObject json;
+				json.Add("type", "LoginServer");
+				json.Add("name", "LoginServer001");
+				json.Add("sskey", "ssmm00@123456");
+				json.AddEmptySubArray("apis");
+				json["apis"].Add("cs_msg_login");
+				json["apis"].Add("cs_msg_register");
+				json["apis"].Add("cs_msg_change_pw");
+
+				client->request("ss_reg_api", json);
 			}
 
 			void cs_msg_heart(INetClient* client, neb::CJsonObject& msg)
 			{
-				CELLLog_Info("cs_msg_heart");
+				CELLLog_Info("LoginServer::cs_msg_heart");
 
-				int msgId;
-				if (!msg.Get("msgId", msgId))
-				{
-					CELLLog_Error("error");
-					return;
-				}
+				neb::CJsonObject ret;
+				ret.Add("data", "wo ye bu ji dao.");
+				client->response(msg, ret);
 
-				client->response(msgId, "hello");
+				//client->respone(msg, "wo ye bu ji dao.");
 			}
 
 			void cs_msg_login(INetClient* client, neb::CJsonObject& msg)
 			{
-				CELLLog_Info("cs_msg_login");
-
-				int msgId;
-				if (!msg.Get("msgId", msgId))
-				{
-					CELLLog_Error("error");
-					return;
-				}
-
-				client->response(msgId, "hello");
+				CELLLog_Info("LoginServer::cs_msg_login");
 			}
 		};
 	}

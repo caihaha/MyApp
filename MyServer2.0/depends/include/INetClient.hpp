@@ -2,66 +2,51 @@
 #define _doyou_io_INetClient_HPP_
 
 #include"TcpWebSocketClient.hpp"
-#include"../json/CJsonObject.hpp"
+#include"CJsonObject.hpp"
 #include"Config.hpp"
 
 namespace doyou {
 	namespace io {
+
 		//客户端数据类型
 		class INetClient
 		{
 		private:
 			TcpWebSocketClient _client;
-			std::string _linkName;
+			//
+			std::string _link_name;
 			std::string _url;
-			int _msgId;
-
+			//
+			int msgId = 0;
+		private:
 			typedef std::function<void(INetClient*, neb::CJsonObject&)> NetEventCall;
 			std::map<std::string, NetEventCall> _map_msg_call;
-
 		public:
-			void reg_msg_call(const std::string &cmd, NetEventCall call)
+			bool connect(const char* link_name,const char* url)
 			{
-				_map_msg_call[cmd] = call;
-			}
-
-			bool on_net_msg_do(const std::string &cmd, neb::CJsonObject& msgJson)
-			{
-				auto iter = _map_msg_call.find(cmd);
-				if (iter != _map_msg_call.end())
-				{
-					iter->second(this, msgJson);
-					return true;
-				}
-
-				CELLLog_Error("unregist cmd %s", cmd);
-				return false;
-			}
-
-			bool connect(const char *linkName, const char* url)
-			{
+				_link_name = link_name;
 				_url = url;
-				_linkName = linkName;
 
-				int sendBuffSize = Config::Instance().getInt("nSendBuffSize", SEND_BUFF_SZIE);
-				int recvBuffSize = Config::Instance().getInt("nRecvBuffSize", RECV_BUFF_SZIE);
+				int s_size = Config::Instance().getInt("nSendBuffSize", SEND_BUFF_SZIE);
+				int r_size = Config::Instance().getInt("nRecvBuffSize", RECV_BUFF_SZIE);
 
-				_client.send_buff_size(sendBuffSize);
-				_client.recv_buff_size(recvBuffSize);
+				_client.send_buff_size(s_size);
+				_client.recv_buff_size(r_size);
 
 				if (!_client.connect(url))
 				{
-					CELLLog_Warring("INetClient:connect(%s) failed", url);
+					CELLLog_Warring("%s::INetClient::connect(%s) failed.", _link_name.c_str(), _url.c_str());
 					return false;
 				}
 
+				//do
 				_client.onopen = [this](WebSocketClientC* pWSClient)
 				{
-					CELLLog_Info("open");
-					neb::CJsonObject msg;
-					msg.Add("linkName", _linkName);
-					msg.Add("url", "_url");
-					on_net_msg_do("onopen", msg);
+					CELLLog_Info("%s::INetClient::connect(%s) success.", _link_name.c_str(), _url.c_str());
+					neb::CJsonObject json;
+					json.Add("link_name", _link_name);
+					json.Add("url", _url);
+					on_net_msg_do("onopen", json);
 				};
 
 				_client.onmessage = [this](WebSocketClientC* pWSClient)
@@ -73,93 +58,68 @@ namespace doyou {
 						return;
 					}
 
-					auto data = pWSClient->fetch_data();
-					CELLLog_Info("websocket server say: %s", data);
+					auto dataStr = pWSClient->fetch_data();
+					//CELLLog_Info("websocket server say: %s", dataStr);
 
 					neb::CJsonObject json;
-					if (!json.Parse(data))
+					if (!json.Parse(dataStr))
 					{
-						CELLLog_Error("json.Parse error %s", json.GetErrMsg().c_str());
+						CELLLog_Error("json.Parse error : %s", json.GetErrMsg().c_str());
 						return;
 					}
 
-					int msgId;
+					int msgId = 0;
 					if (!json.Get("msgId", msgId))
 					{
-						CELLLog_Error("error");
-						return;
-					}
-
-					std::string cmd;
-					if (!json.Get("cmd", cmd))
-					{
-						CELLLog_Error("error");
+						CELLLog_Error("not found key<%s>.", "msgId");
 						return;
 					}
 
 					time_t time = 0;
 					if (!json.Get("time", time))
 					{
-						CELLLog_Error("error");
+						CELLLog_Error("not found key<%s>.", "time");
+						return;
 					}
 
-					std::string msgData;
-					if (!json.Get("data", msgData))
+					std::string cmd;
+					if (!json.Get("cmd", cmd))
 					{
-						CELLLog_Error("error");
+						CELLLog_Error("not found key<%s>.", "cmd");
+						return;
 					}
 
-					on_net_msg_do(cmd,json);
+					std::string data;
+					if (!json.Get("data", data))
+					{
+						CELLLog_Error("not found key<%s>.", "data");
+						return;
+					}
+
+					on_net_msg_do(cmd, json);
 				};
 
-				_client.onclose = [](WebSocketClientC* pWSClient)
+				_client.onclose = [this](WebSocketClientC* pWSClient)
 				{
-					CELLLog_Info("websocket client onclose!");
+					neb::CJsonObject json;
+					json.Add("link_name", _link_name);
+					json.Add("url", _url);
+					on_net_msg_do("onclose", json);
 				};
 
-				_client.onerror = [](WebSocketClientC* pWSClient)
+				_client.onerror = [this](WebSocketClientC* pWSClient)
 				{
-					CELLLog_Info("websocket client onerror!");
+					neb::CJsonObject json;
+					json.Add("link_name", _link_name);
+					json.Add("url", _url);
+					on_net_msg_do("onerror", json);
 				};
+
 			}
 
-			void response(int msgId, std::string data)
+			bool run(int microseconds = 1)
 			{
-				neb::CJsonObject ret;
-				ret.Add("msgId", msgId);
-				ret.Add("time", Time::getSystemClockNow());
-				ret.Add("data", data);
-
-				std::string retString = ret.ToString();
-				_client.writeText(retString.c_str(), retString.length());
-			}
-
-			void response(neb::CJsonObject msg, std::string data)
-			{
-				int msgId;
-				if (!msg.Get("msgId", msgId))
-				{
-					CELLLog_Error("error");
-					return;
-				}
-
-				neb::CJsonObject ret;
-				ret.Add("msgId", msgId);
-				ret.Add("time", Time::getSystemClockNow());
-				ret.Add("data", data);
-
-				std::string retString = ret.ToString();
-				_client.writeText(retString.c_str(), retString.length());
-			}
-
-			void request(const std::string cmd, neb::CJsonObject &msg)
-			{
-				msg.Add("msgId", ++_msgId);
-				msg.Add("cmd", cmd);
-				msg.Add("time", Time::getSystemClockNow());
-
-				std::string retString = msg.ToString();
-				_client.writeText(retString.c_str(), retString.length());
+				return _client.OnRun(microseconds);
 			}
 
 			void close()
@@ -167,9 +127,79 @@ namespace doyou {
 				_client.Close();
 			}
 
-			bool run(int microseconds = 1)
+			void reg_msg_call(std::string cmd, NetEventCall call)
 			{
-				return _client.OnRun(microseconds);
+				_map_msg_call[cmd] = call;
+			}
+
+			bool on_net_msg_do(const std::string& cmd, neb::CJsonObject& msgJson)
+			{
+				auto itr = _map_msg_call.find(cmd);
+				if (itr != _map_msg_call.end())
+				{
+					itr->second(this, msgJson);
+					return true;
+				}
+				CELLLog_Info("%s::INetClient::on_net_msg_do not found cmd<%s>.", _link_name.c_str(),cmd.c_str());
+				return false;
+			}
+
+
+			void request(const std::string& cmd, neb::CJsonObject& data)
+			{
+				neb::CJsonObject msg;
+				msg.Add("cmd", cmd);
+				msg.Add("msgId", ++msgId);
+				msg.Add("time", Time::system_clock_now());
+				msg.Add("data", data);
+
+				std::string retStr = msg.ToString();
+				_client.writeText(retStr.c_str(), retStr.length());
+			}
+
+			void response(int msgId, std::string data)
+			{
+				neb::CJsonObject ret;
+				ret.Add("msgId", msgId);
+				ret.Add("time", Time::system_clock_now());
+				ret.Add("data", data);
+
+				std::string retStr = ret.ToString();
+				_client.writeText(retStr.c_str(), retStr.length());
+			}
+
+			void response(neb::CJsonObject& msg, std::string data)
+			{
+				int msgId = 0;
+				if (!msg.Get("msgId", msgId))
+				{
+					CELLLog_Error("not found key<%s>.", "msgId");
+					return;
+				}
+
+				neb::CJsonObject ret;
+				ret.Add("msgId", msgId);
+				ret.Add("time", Time::system_clock_now());
+				ret.Add("data", data);
+
+				std::string retStr = ret.ToString();
+				_client.writeText(retStr.c_str(), retStr.length());
+			}
+
+			void response(neb::CJsonObject& msg, neb::CJsonObject& ret)
+			{
+				int msgId = 0;
+				if (!msg.Get("msgId", msgId))
+				{
+					CELLLog_Error("not found key<%s>.", "msgId");
+					return;
+				}
+
+				ret.Add("msgId", msgId);
+				ret.Add("time", Time::system_clock_now());
+
+				std::string retStr = ret.ToString();
+				_client.writeText(retStr.c_str(), retStr.length());
 			}
 		};
 	}

@@ -28,6 +28,7 @@ namespace doyou {
 			virtual void OnDisconnect() {
 				if (onclose)
 				{
+					//WebSocketClientC* pWSClient = dynamic_cast<WebSocketClientC*>(_pClient);
 					if(_pWSClient)
 						onclose(_pWSClient);
 				}
@@ -188,19 +189,20 @@ namespace doyou {
 
 						if (connet2ip(pAddr->ai_family, ipStr, port_))
 						{
-							break;
+							return 0;
 						}
 					}
 				}
 
 				freeaddrinfo(pAddrList);
-				return ret;
+				return -1;
 			}
 
 			int writeText(const char* pData, int len)
 			{
-				if(_pWSClient)
+				if (_pWSClient)
 					return _pWSClient->writeText(pData, len);
+				return 0;
 			}
 
 			void send_buff_size(int n)
@@ -212,7 +214,6 @@ namespace doyou {
 			{
 				_nRecvBuffSize = n;
 			}
-
 		private:
 			void url2get(const char* host, const char* path, const char* args)
 			{
@@ -261,7 +262,7 @@ namespace doyou {
 				if (!ip)
 					return false;
 
-				if (INVALID_SOCKET == InitSocket(af, 202400, 202400))
+				if (INVALID_SOCKET == InitSocket(af, _nSendBuffSize, _nRecvBuffSize))
 					return false;
 
 				if (SOCKET_ERROR == Connect(ip, port))
@@ -321,9 +322,10 @@ namespace doyou {
 			////
 			std::string _cKey;
 			//
-			WebSocketClientC* _pWSClient = NULL;
-
+			WebSocketClientC* _pWSClient = nullptr;
+			//客户端发送缓冲区大小
 			int _nSendBuffSize = SEND_BUFF_SZIE;
+			//客户端接收缓冲区大小
 			int _nRecvBuffSize = RECV_BUFF_SZIE;
 		public:
 			typedef std::function<void(WebSocketClientC*)> EventCall;

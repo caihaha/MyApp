@@ -9,13 +9,13 @@ namespace doyou {
 		class Time
 		{
 		public:
-			//获取当前计算器运行时间 (毫秒)
+			//获取当前计算机运行时间 (毫秒)
 			static time_t getNowInMilliSec()
 			{
 				return duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count();
 			}
-			//获取当前时间
-			static time_t getSystemClockNow()
+			//获取当前时间 (毫秒)
+			static time_t system_clock_now()
 			{
 				return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 			}

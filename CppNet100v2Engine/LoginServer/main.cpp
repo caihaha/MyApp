@@ -1,26 +1,25 @@
 #include"Log.hpp"
 #include"Config.hpp"
 #include"LoginServer.hpp"
-#include"CJsonObject.hpp"
+
 
 using namespace doyou::io;
 
 int main(int argc, char* args[])
 {
-	//ÉèÖÃÔËĞĞÈÕÖ¾Ãû³Æ
+	//è®¾ç½®è¿è¡Œæ—¥å¿—åç§°
 	Log::Instance().setLogPath("LoginServerLog", "w", false);
 	Config::Instance().Init(argc, args);
 
 	LoginServer server;
 	server.Init();
-
 	while (true)
 	{
 		server.Run();
 	}
-
 	server.Close();
-	//ÔÚÖ÷Ïß³ÌÖĞµÈ´ıÓÃ»§ÊäÈëÃüÁî
+
+	////åœ¨ä¸»çº¿ç¨‹ä¸­ç­‰å¾…ç”¨æˆ·è¾“å…¥å‘½ä»¤
 	//while (true)
 	//{
 	//	char cmdBuf[256] = {};

@@ -29,17 +29,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\LoginServer.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetClient.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h">
       <Filter>json</Filter>
     </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp">
       <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetClient.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\LoginServer.hpp">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

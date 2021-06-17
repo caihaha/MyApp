@@ -157,8 +157,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetClient.hpp" />
-    <ClInclude Include="..\..\CppNet100v2\depends\include\LoginServer.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetClient.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\LoginServer.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp" />
   </ItemGroup>

@@ -157,10 +157,10 @@
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\GateServer.hpp" />
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetClientS.hpp" />
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetServer.hpp" />
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetTransfer.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\GateServer.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetClientS.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetServer.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetTransfer.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp" />
   </ItemGroup>

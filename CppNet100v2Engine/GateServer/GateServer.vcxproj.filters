@@ -29,23 +29,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetServer.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetClientS.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\GateServer.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CppNet100v2\depends\include\INetTransfer.hpp">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h">
       <Filter>json</Filter>
     </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp">
       <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\GateServer.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetClientS.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetServer.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\INetTransfer.hpp">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

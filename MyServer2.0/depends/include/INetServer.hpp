@@ -2,7 +2,7 @@
 #define _doyou_io_INetServer_HPP_
 
 #include"TcpWebSocketServer.hpp"
-#include"../json/CJsonObject.hpp"
+#include"CJsonObject.hpp"
 #include"INetClientS.hpp"
 
 namespace doyou {

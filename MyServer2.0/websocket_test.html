@@ -45,12 +45,12 @@
             console.log('Error occured: ' + evt.data);
         }
 
-
+        _msgId = 0;
         function _send(msg) {
             var jsonObj = {
                 cmd:"cs_msg_login",
                 is_req:true,
-                msgId:1,
+                msgId:++_msgId,
                 time:Date.now(),
                 data:"hello"
             }

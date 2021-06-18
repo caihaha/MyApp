@@ -30,11 +30,11 @@ namespace doyou {
 		private:
 			void cs_msg_heart(Server* server, INetClientS* client, neb::CJsonObject& msg)
 			{
-				CELLLog_Info("GateServer::cs_msg_heart");
+				//CELLLog_Info("GateServer::cs_msg_heart");
 
-				neb::CJsonObject ret;
-				ret.Add("data", "wo ye bu ji dao.");
-				client->response(msg, ret);
+				//neb::CJsonObject ret;
+				//ret.Add("data", "wo ye bu ji dao.");
+				//client->response(msg, ret);
 
 				//client->respone(msg, "wo ye bu ji dao.");
 			}
@@ -68,12 +68,15 @@ namespace doyou {
 					client->response(msg, ret);
 					return;
 				}
+
 				int size = apis.GetArraySize();
 				for (size_t i = 0; i < size; i++)
 				{
 					CELLLog_Info("ss_reg_api: %s >> %s", name.c_str(), apis(i).c_str());
 					_transfer.add(apis(i), client);
 				}
+
+				client->response(msg, "ss_reg_api ok!");
 			}
 
 			void on_other_msg(Server* server, INetClientS* client, std::string& cmd, neb::CJsonObject& msg)

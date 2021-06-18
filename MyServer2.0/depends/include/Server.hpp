@@ -212,6 +212,14 @@ namespace doyou {
 				return _clients.size() + _clientsBuff.size();
 			}
 
+			Client* find_client(int id)
+			{
+				auto iter = _clients.find((SOCKET)id);
+				if (iter != _clients.end())
+					return iter->second;
+				return nullptr;
+			}
+
 			//void addSendTask(Client* pClient, netmsg_DataHeader* header)
 			//{
 			//	_taskServer.addTask([pClient, header]() {

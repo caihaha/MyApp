@@ -2,7 +2,7 @@
 #define _doyou_io_INetServer_HPP_
 
 #include"TcpWebSocketServer.hpp"
-#include "CJsonObject.hpp"
+#include"../json/CJsonObject.hpp"
 #include"INetClientS.hpp"
 
 namespace doyou {
@@ -103,24 +103,66 @@ namespace doyou {
 					return;
 				}
 				
-				std::string cmd;
-				if (!json.Get("cmd", cmd))
+				//服务端响应
+				bool is_resp = false;
+				if (json.Get("is_resp", is_resp) && is_resp)
 				{
-					CELLLog_Error("not found key<%s>.", "cmd");
+					if (!pWSClient->is_ss_link())
+					{
+						CELLLog_Error("pWSClient->is_ss_link=false, is_resp=true.");
+						return;
+					}
+
+					int clientId = 0;
+					if (!json.Get("clientId", clientId))
+					{
+						CELLLog_Error("not found key<%s>.", "clientId");
+						return;
+					}
+
+					auto client = dynamic_cast<INetClientS*>( pServer->find_client(clientId));
+					if (!client)
+					{
+						CELLLog_Error("INetServer::OnNetMsgWS::pServer->find_client(%d) miss.", clientId);
+						return;
+					}
+					if (SOCKET_ERROR == client->writeText(dataStr, wsh.len))
+					{
+						CELLLog_Error("INetServer::OnNetMsgWS::sslink(%s)->clientId(%d) writeText SOCKET_ERROR.", pWSClient->link_name().c_str(), clientId);
+					}
+
 					return;
 				}
 
-				neb::CJsonObject data;
-				if (!json.Get("data", data))
+				bool is_req = false;
+				if (!json.Get("is_req", is_req))
 				{
-					CELLLog_Error("not found key<%s>.", "data");
+					CELLLog_Error("not found key<%s>.", "is_req");
+					return;
+				}
+				//用户端请求
+				//服务端请求
+				if (is_req)
+				{
+					std::string cmd;
+					if (!json.Get("cmd", cmd))
+					{
+						CELLLog_Error("not found key<%s>.", "cmd");
+						return;
+					}
+
+					int clientId = (int)pWSClient->sockfd();
+					json.Add("clientId", clientId);
+
+					if (on_net_msg_do(pServer, pWSClient, cmd, json))
+						return;
+
+					on_other_msg(pServer, pWSClient, cmd, json);
+
 					return;
 				}
 
-				if (on_net_msg_do(pServer, pWSClient, cmd, json))
-					return;
-
-				on_other_msg(pServer, pWSClient, cmd, json);
+				CELLLog_Error("INetServer::OnNetMsgWS:: is_req=false,  is_resp=false.");
 			}
 
 			void Init()

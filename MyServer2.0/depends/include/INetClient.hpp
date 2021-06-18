@@ -4,6 +4,7 @@
 #include"TcpWebSocketClient.hpp"
 #include"CJsonObject.hpp"
 #include"Config.hpp"
+#include"Timestamp.hpp"
 
 namespace doyou {
 	namespace io {
@@ -12,17 +13,25 @@ namespace doyou {
 		class INetClient
 		{
 		private:
+			//
 			TcpWebSocketClient _client;
 			//
+			Timestamp _time2heart;
+			//
 			std::string _link_name;
+			//
 			std::string _url;
 			//
 			int msgId = 0;
 		private:
+			//
 			typedef std::function<void(INetClient*, neb::CJsonObject&)> NetEventCall;
+			//
 			std::map<std::string, NetEventCall> _map_msg_call;
+			//
+			std::map<int, NetEventCall> _map_request_call;
 		public:
-			bool connect(const char* link_name,const char* url)
+			void connect(const char* link_name,const char* url)
 			{
 				_link_name = link_name;
 				_url = url;
@@ -32,12 +41,6 @@ namespace doyou {
 
 				_client.send_buff_size(s_size);
 				_client.recv_buff_size(r_size);
-
-				if (!_client.connect(url))
-				{
-					CELLLog_Warring("%s::INetClient::connect(%s) failed.", _link_name.c_str(), _url.c_str());
-					return false;
-				}
 
 				//do
 				_client.onopen = [this](WebSocketClientC* pWSClient)
@@ -82,21 +85,28 @@ namespace doyou {
 						return;
 					}
 
-					std::string cmd;
-					if (!json.Get("cmd", cmd))
+					//响应
+					bool is_resp = false;
+					if (json.Get("is_resp", is_resp) && is_resp)
 					{
-						CELLLog_Error("not found key<%s>.", "cmd");
+						on_net_msg_do(msgId, json);
 						return;
 					}
 
-					std::string data;
-					if (!json.Get("data", data))
+					//请求
+					bool is_req = false;
+					if (!json.Get("is_req", is_req) && is_req)
 					{
-						CELLLog_Error("not found key<%s>.", "data");
+						std::string cmd;
+						if (!json.Get("cmd", cmd))
+						{
+							CELLLog_Error("not found key<%s>.", "cmd");
+							return;
+						}
+
+						on_net_msg_do(cmd, json);
 						return;
 					}
-
-					on_net_msg_do(cmd, json);
 				};
 
 				_client.onclose = [this](WebSocketClientC* pWSClient)
@@ -119,7 +129,24 @@ namespace doyou {
 
 			bool run(int microseconds = 1)
 			{
-				return _client.OnRun(microseconds);
+				if (_client.isRun())
+				{
+					if (_time2heart.getElapsedSecond() > 5.0)
+					{
+						_time2heart.update();
+						neb::CJsonObject json;
+						request("cs_msg_heart", json);
+					}
+					return _client.OnRun(microseconds);
+				}
+
+				if (_client.connect(_url.c_str()))
+				{
+					_time2heart.update();
+					CELLLog_Warring("%s::INetClient::connect(%s) success.", _link_name.c_str(), _url.c_str());
+					return true;
+				}
+				return false;
 			}
 
 			void close()
@@ -144,12 +171,43 @@ namespace doyou {
 				return false;
 			}
 
+			bool on_net_msg_do(int msgId, neb::CJsonObject& msgJson)
+			{
+				auto itr = _map_request_call.find(msgId);
+				if (itr != _map_request_call.end())
+				{
+					itr->second(this, msgJson);
+					return true;
+				}
+				CELLLog_Info("%s::INetClient::on_net_msg_do not found msgId<%d>.", _link_name.c_str(), msgId);
+				return false;
+			}
 
 			void request(const std::string& cmd, neb::CJsonObject& data)
 			{
+				_time2heart.update();
+
 				neb::CJsonObject msg;
 				msg.Add("cmd", cmd);
+				msg.Add("is_req", true, true);
 				msg.Add("msgId", ++msgId);
+				msg.Add("time", Time::system_clock_now());
+				msg.Add("data", data);
+
+				std::string retStr = msg.ToString();
+				_client.writeText(retStr.c_str(), retStr.length());
+			}
+
+			void request(const std::string& cmd, neb::CJsonObject& data, NetEventCall call)
+			{
+				_time2heart.update();
+				
+				neb::CJsonObject msg;
+				msg.Add("cmd", cmd);
+				msg.Add("is_req", true, true);
+				msg.Add("msgId", ++msgId);
+				_map_request_call[msgId] = call;
+
 				msg.Add("time", Time::system_clock_now());
 				msg.Add("data", data);
 
@@ -161,6 +219,7 @@ namespace doyou {
 			{
 				neb::CJsonObject ret;
 				ret.Add("msgId", msgId);
+				ret.Add("is_resp", true, true);
 				ret.Add("time", Time::system_clock_now());
 				ret.Add("data", data);
 
@@ -179,6 +238,7 @@ namespace doyou {
 
 				neb::CJsonObject ret;
 				ret.Add("msgId", msgId);
+				ret.Add("is_resp", true, true);
 				ret.Add("time", Time::system_clock_now());
 				ret.Add("data", data);
 
@@ -195,7 +255,16 @@ namespace doyou {
 					return;
 				}
 
+				int clientId = 0;
+				if (!msg.Get("clientId", clientId))
+				{
+					CELLLog_Error("not found key<%s>.", "clientId");
+					return;
+				}
+
 				ret.Add("msgId", msgId);
+				ret.Add("clientId", clientId);
+				ret.Add("is_resp", true, true);
 				ret.Add("time", Time::system_clock_now());
 
 				std::string retStr = ret.ToString();

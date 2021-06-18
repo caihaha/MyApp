@@ -49,6 +49,7 @@
         function _send(msg) {
             var jsonObj = {
                 cmd:"cs_msg_login",
+                is_req:true,
                 msgId:1,
                 time:Date.now(),
                 data:"hello"

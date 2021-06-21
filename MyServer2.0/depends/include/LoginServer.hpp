@@ -17,6 +17,8 @@ namespace doyou {
 
 				_csGate.reg_msg_call("onopen", std::bind(&LoginServer::onopen_csGate, this, std::placeholders::_1, std::placeholders::_2));
 
+				_csGate.reg_msg_call("cs_msg_regist", std::bind(&LoginServer::cs_msg_regist, this, std::placeholders::_1, std::placeholders::_2));
+
 				_csGate.reg_msg_call("cs_msg_login", std::bind(&LoginServer::cs_msg_login, this, std::placeholders::_1, std::placeholders::_2));
 			}
 
@@ -39,12 +41,21 @@ namespace doyou {
 				json.Add("sskey", "ssmm00@123456");
 				json.AddEmptySubArray("apis");
 				json["apis"].Add("cs_msg_login");
-				json["apis"].Add("cs_msg_register");
+				json["apis"].Add("cs_msg_regist");
 				json["apis"].Add("cs_msg_change_pw");
 
 				client->request("ss_reg_api", json, [](INetClient* client, neb::CJsonObject& msg) {
 					CELLLog_Info(msg("data").c_str());
 				});
+			}
+
+			void cs_msg_regist(INetClient* client, neb::CJsonObject& msg)
+			{
+				CELLLog_Info("LoginServer::cs_msg_regist");
+
+				neb::CJsonObject ret;
+				ret.Add("data", "regist successs.");
+				client->response(msg, ret);
 			}
 
 			void cs_msg_login(INetClient* client, neb::CJsonObject& msg)

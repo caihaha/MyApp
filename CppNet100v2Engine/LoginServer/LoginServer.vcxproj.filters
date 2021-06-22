@@ -16,6 +16,9 @@
     <Filter Include="json">
       <UniqueIdentifier>{ff03410c-7207-4f71-bc6d-f8c57f567c6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sqlite">
+      <UniqueIdentifier>{1cc343a4-2a43-455d-ba97-c10413e54eef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +29,12 @@
     </ClCompile>
     <ClCompile Include="..\..\MyServer2.0\depends\json\CJsonObject.cpp">
       <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\shell.c">
+      <Filter>sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\sqlite3.c">
+      <Filter>sqlite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +49,15 @@
     </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\include\LoginServer.hpp">
       <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3.h">
+      <Filter>sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3ext.h">
+      <Filter>sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\DBManager.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

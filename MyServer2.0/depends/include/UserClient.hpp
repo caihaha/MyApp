@@ -16,6 +16,8 @@ namespace doyou {
 				_csGate.connect("csGate", csGateUrl);
 
 				_csGate.reg_msg_call("onopen", std::bind(&UserClient::onopen_csGate, this, std::placeholders::_1, std::placeholders::_2));
+
+				//_csGate.reg_msg_call("cs_msg_login", std::bind(&UserClient::cs_msg_login, this, std::placeholders::_1, std::placeholders::_2));
 			}
 
 			void Run()
@@ -33,12 +35,20 @@ namespace doyou {
 			{
 				neb::CJsonObject json;
 				json.Add("username", "test001");
-				json.Add("password", "123456");
+				json.Add("password", "abc1234");
 
-				client->request("cs_msg_regist", json, [](INetClient* client, neb::CJsonObject& msg) {
+				client->request("cs_msg_register", json, [](INetClient* client, neb::CJsonObject& msg) {
 					CELLLog_Info(msg("data").c_str());
 				});
 			}
+
+			//void cs_msg_login(INetClient* client, neb::CJsonObject& msg)
+			//{
+			//	CELLLog_Info("UserClient::cs_msg_login");
+			//	neb::CJsonObject ret;
+			//	ret.Add("data", "login successs.");
+			//	client->response(msg, ret);
+			//}
 		};
 	}
 }

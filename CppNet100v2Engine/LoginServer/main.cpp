@@ -1,7 +1,7 @@
 #include"Log.hpp"
 #include"Config.hpp"
 #include"LoginServer.hpp"
-
+#include"DBUser.hpp"
 
 using namespace doyou::io;
 
@@ -10,7 +10,14 @@ int main(int argc, char* args[])
 	//设置运行日志名称
 	Log::Instance().setLogPath("LoginServerLog", "w", false);
 	Config::Instance().Init(argc, args);
-
+	////////////////////
+	//DBUser db;
+	//db.init();
+	//auto b = db.hasByKV("user_info", "username","aaa");
+	//db.add_user("user001", "mm123456", "asd", 0);
+	//db.add_user("user002", "mm123456", "qbl", 0);
+	//db.close();
+	///////////////////
 	LoginServer server;
 	server.Init();
 	while (true)

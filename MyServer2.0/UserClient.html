@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>websocket-client</title>
+</head>
+
+<body>
+    <!--操作界面-->
+    <div align="center">
+        <!--websocket基础测试-->
+        <button onclick="onclick_btn_connect()">连接</button>
+        <button onclick="onclick_btn_close()">关闭</button>
+    </div>
+    <!--注册账号-->
+    <div align="center">
+            -------------注册----------<br>
+            账号<input type="text" id="userName" /><br>
+            密码<input type="text" id="passWord" /><br>
+            昵称<input type="text" id="nickname" /><br>
+            性别
+            <input type="radio" id="sex1" value="1" name="sex" checked="checked">
+            <input type="radio" id="sex0" value="0" name="sex">
+            <br>
+            <button onclick="onclick_btn_register()">注册</button>
+            <br><br>
+            <textarea id="msgbox" style="resize:none;" rows="20" cols="40" >
+            </textarea>
+    </div>
+    <br>
+    
+    <script type="text/javascript">
+        //屏幕宽度自适应
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/320;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=320, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=320, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=320, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+        //信息编号
+        var msgIndex = 0;
+        //输出信息到文本区域
+        function add_log_msg(msg)
+        {
+            var msgbox = document.getElementById("msgbox");
+            //为当前信息添加编号
+            msg = ++msgIndex+":"+msg;
+            //输出信息到控制台
+            console.log(msg);
+            //添加信息到textarea
+            msgbox.value = msgbox.value+"\n"+msg;
+            //滚到最底部
+            msgbox.scrollTop=msgbox.scrollHeight;
+        }
+    </script>
+    <!--业务对象-->
+    <script>
+        class UserClient
+        {
+            constructor()
+            {
+                //连接协议对象
+                this.websocket = null;
+                //请求消息id
+                //每次发送的请求对应一个数字id
+                //每个id对应一个回调函数
+                this.msgId = 0;
+                //消息回调函数表<k=id,v=callback>
+                this.msg_callback = {};
+                //心跳定时任务的id
+                this.intervalId = null;
+            }
+            //建立连接
+            connect(server_url,callback)
+            {
+                var self = this;
+                try {
+                    this.websocket = new WebSocket(server_url);
+                } catch (e) {
+                    add_log_msg("new WebSocket error:" + e);
+                    return;
+                }
+
+                this.websocket.onopen = function(){
+                    add_log_msg("websocket.onopen");
+                    if(callback)
+                        callback(self);
+
+                    self.intervalId = setInterval(function()
+                    {
+                        self.request("cs_msg_heart", null);
+                    },5000);
+                }
+
+                this.websocket.onclose = function(){
+                    add_log_msg("websocket.onclose");
+                }
+
+                this.websocket.onerror = function(evt){
+                    add_log_msg("websocket.onerror: " + evt.data);
+                }
+
+                this.websocket.onmessage = function(evt){
+                    add_log_msg("websocket.onmessage: " + evt.data);
+
+                    try {
+                        //收到的json字符串转换为json对象
+                        var jsonObj = JSON.parse(evt.data);
+                        //查找msgId有没有对应的回调函数
+                        if(self.msg_callback.hasOwnProperty(jsonObj.msgId))
+                        {
+                            var call = self.msg_callback[jsonObj.msgId];
+                            call(jsonObj);
+                            delete(self.msg_callback[jsonObj.msgId]);
+                        }
+                    } catch (e) {
+                        add_log_msg("websocket.onmessage: " + e);
+                        return;
+                    }
+                }
+            }
+            //发起请求
+            request(cmdStr, jsonData, callback)
+            {
+                if (this.websocket.readyState != WebSocket.OPEN) {
+                    add_log_msg("send failed. websocket not open. please check.");
+                    return;
+                }
+                var jsonObj = {
+                    cmd:cmdStr,
+                    is_req:true,
+                    msgId:++this.msgId,
+                    time:Date.now(),
+                    data:jsonData
+                }
+                this.msg_callback[this.msgId] = callback;
+                var jsonstr = JSON.stringify(jsonObj);
+                add_log_msg(jsonstr);
+                this.websocket.send(jsonstr);
+            }
+            //关闭连接
+            close()
+            {
+                clearInterval(this.intervalId);
+
+                if(this.websocket)
+                    this.websocket.close();
+            }
+            //注册账号
+            register(username, password,nickname,sex)
+            {
+                this.request("cs_msg_register",
+                {
+                    username:username,
+                    password:password,
+                    nickname:nickname,
+                    sex:sex
+                }
+                ,function(msg){
+                    if(0 == msg.state)
+                        add_log_msg("注册成功："+msg.data.userId);
+                    else
+                        add_log_msg("注册失败："+msg.data);
+                });
+            }
+        }
+    </script>
+    <!--业务逻辑-->
+    <script>
+        var user = new UserClient();
+        function onclick_btn_connect() {
+            user.connect('ws://192.168.0.100:4567');
+        }
+
+        function onclick_btn_close() {
+            user.close();
+        }
+
+        function onclick_btn_register() {
+            var userName = document.getElementById("userName").value;
+            var passWord = document.getElementById("passWord").value;
+            var nickname = document.getElementById("nickname").value;
+            var sex = document.getElementById("sex1").checked ? 1:0;
+            user.register(userName, passWord,nickname,sex);
+        }
+    </script>
+</body>
+</html>

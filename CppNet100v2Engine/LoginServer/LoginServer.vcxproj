@@ -99,7 +99,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\sqlite;..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -114,7 +114,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\sqlite;..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -127,7 +127,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\sqlite;..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -142,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\MyServer2.0\depends\sqlite;..\..\MyServer2.0\depends\include;..\..\MyServer2.0\depends\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,13 +154,18 @@
   <ItemGroup>
     <ClCompile Include="..\..\MyServer2.0\depends\json\cJSON.c" />
     <ClCompile Include="..\..\MyServer2.0\depends\json\CJsonObject.cpp" />
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\shell.c" />
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\sqlite3.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\MyServer2.0\depends\include\DBManager.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\include\INetClient.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\include\LoginServer.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3.h" />
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3ext.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

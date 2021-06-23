@@ -36,6 +36,9 @@
     <ClCompile Include="..\..\MyServer2.0\depends\sqlite\sqlite3.c">
       <Filter>sqlite</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\CppSQLite3.cpp">
+      <Filter>sqlite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="..\..\MyServer2.0\depends\include\DBManager.hpp">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\CppSQLite3.h">
+      <Filter>sqlite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

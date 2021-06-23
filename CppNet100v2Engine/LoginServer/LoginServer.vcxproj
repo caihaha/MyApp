@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\MyServer2.0\depends\json\cJSON.c" />
     <ClCompile Include="..\..\MyServer2.0\depends\json\CJsonObject.cpp" />
+    <ClCompile Include="..\..\MyServer2.0\depends\sqlite\CppSQLite3.cpp" />
     <ClCompile Include="..\..\MyServer2.0\depends\sqlite\shell.c" />
     <ClCompile Include="..\..\MyServer2.0\depends\sqlite\sqlite3.c" />
     <ClCompile Include="main.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="..\..\MyServer2.0\depends\include\LoginServer.hpp" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\cJSON.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\json\CJsonObject.hpp" />
+    <ClInclude Include="..\..\MyServer2.0\depends\sqlite\CppSQLite3.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3.h" />
     <ClInclude Include="..\..\MyServer2.0\depends\sqlite\sqlite3ext.h" />
   </ItemGroup>

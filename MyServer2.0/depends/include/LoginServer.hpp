@@ -25,6 +25,7 @@ namespace doyou {
 
 				_csGate.reg_msg_call("cs_msg_login", std::bind(&LoginServer::cs_msg_login, this, std::placeholders::_1, std::placeholders::_2));
 				_csGate.reg_msg_call("cs_msg_register", std::bind(&LoginServer::cs_msg_register, this, std::placeholders::_1, std::placeholders::_2));
+				_csGate.reg_msg_call("cs_msg_change_pw", std::bind(&LoginServer::cs_msg_change_pw, this, std::placeholders::_1, std::placeholders::_2));
 			}
 
 			void Run()
@@ -98,69 +99,69 @@ namespace doyou {
 				{
 					if (!msg["data"].Get("username", username))
 					{
-						client->resp_error(clientId, msgId, "not found key <username>.", 1);
+						client->resp_error(clientId, msgId, "not found key <username>.");
 						return;
 					}
 
 					if (username.empty())
 					{
-						client->resp_error(clientId, msgId, "<username> can not be empty!", 1);
+						client->resp_error(clientId, msgId, "<username> can not be empty!");
 						return;
 					}
 					//正则表达式
 					std::regex reg1("^[0-9a-zA-Z]{6,16}$");
 					if (!regex_match(username, reg1))
 					{
-						client->resp_error(clientId, msgId, "<username> format is incorrect!", 1);
+						client->resp_error(clientId, msgId, "<username> format is incorrect!");
 						return;
 					}
 
 					if (!msg["data"].Get("password", password))
 					{
-						client->resp_error(clientId, msgId, "not found key<password>.", 1);
+						client->resp_error(clientId, msgId, "not found key<password>.");
 						return;
 					}
 
 					if (password.empty())
 					{
-						client->resp_error(clientId, msgId, "<password> can not be empty!", 1);
+						client->resp_error(clientId, msgId, "<password> can not be empty!");
 						return;
 					}
 
 					//正则表达式
 					if (!regex_match(password, reg1))
 					{
-						client->resp_error(clientId, msgId, "<password> format is incorrect!", 1);
+						client->resp_error(clientId, msgId, "<password> format is incorrect!");
 						return;
 					}
 
 					if (!msg["data"].Get("nickname", nickname))
 					{
-						client->resp_error(clientId, msgId, "not found key<nickname>.", 1);
+						client->resp_error(clientId, msgId, "not found key<nickname>.");
 						return;
 					}
 
 					if (nickname.empty())
 					{
-						client->resp_error(clientId, msgId, "<nickname> can not be empty!", 1);
+						client->resp_error(clientId, msgId, "<nickname> can not be empty!");
 						return;
 					}
 
 					if (nickname.length() <3 || nickname.length() > 16)
 					{
-						client->resp_error(clientId, msgId, "<nickname> format is incorrect!", 1);
+						client->resp_error(clientId, msgId, "<nickname> format is incorrect!");
 						return;
 					}
 
 					if (!msg["data"].Get("sex", sex))
 					{
-						client->resp_error(clientId, msgId, "not found key<sex>.", 1);
+						client->resp_error(clientId, msgId, "not found key<sex>.");
 						return;
 					}
 
 					if (sex !=0 && sex != 1)
 					{
-						client->resp_error(clientId, msgId, "<sex> is only 0 or 1!", 1);
+						client->resp_error(clientId, msgId, "<sex> is only 0 or 1!");
 						return;
 					}
 				}
@@ -190,6 +191,95 @@ namespace doyou {
 					client->resp_error(clientId, msgId, "unkown error.");
 				}
 			}
+
+			void cs_msg_change_pw(INetClient* client, neb::CJsonObject& msg)
+			{
+				//通用基础字段获取与验证
+				int clientId = 0;
+				if (!msg.Get("clientId", clientId))
+				{
+					CELLLog_Error("not found key<%s>.", "clientId");
+					return;
+				}
+
+				int msgId = 0;
+				if (!msg.Get("msgId", msgId))
+				{
+					CELLLog_Error("not found key<%s>.", "msgId");
+					return;
+				}
+
+				//当前请求字段获取与验证
+				std::string username;
+				std::string password_old;
+				std::string password_new;
+				{
+					if (!msg["data"].Get("username", username))
+					{
+						client->resp_error(clientId, msgId, "not found key <username>.");
+						return;
+					}
+
+					if (username.empty())
+					{
+						client->resp_error(clientId, msgId, "<username> can not be empty!");
+						return;
+					}
+					//正则表达式
+					std::regex reg1("^[0-9a-zA-Z]{6,16}$");
+					if (!regex_match(username, reg1))
+					{
+						client->resp_error(clientId, msgId, "<username> format is incorrect!");
+						return;
+					}
+
+					if (!msg["data"].Get("password_old", password_old))
+					{
+						client->resp_error(clientId, msgId, "not found key<password_old>.");
+						return;
+					}
+
+					if (password_old.empty())
+					{
+						client->resp_error(clientId, msgId, "<password_old> can not be empty!");
+						return;
+					}
+
+					//正则表达式
+					if (!regex_match(password_old, reg1))
+					{
+						client->resp_error(clientId, msgId, "<password_old> format is incorrect!");
+						return;
+					}
+
+					if (!msg["data"].Get("password_new", password_new))
+					{
+						client->resp_error(clientId, msgId, "not found key<password_new>.");
+						return;
+					}
+
+					if (password_new.empty())
+					{
+						client->resp_error(clientId, msgId, "<password_new> can not be empty!");
+						return;
+					}
+
+					//正则表达式
+					if (!regex_match(password_new, reg1))
+					{
+						client->resp_error(clientId, msgId, "<password_new> format is incorrect!");
+						return;
+					}
+				}
+				//
+				CELLLog_Info("LoginServer::cs_msg_change_pw: msgId=%d username=%s password_old=%s password_new=%s", msgId, username.c_str(), password_old.c_str(), password_new.c_str());
+				
+				//获取用户数据
+
+				//更新用户密码
+
+			}
+
 		};
 	}
 }

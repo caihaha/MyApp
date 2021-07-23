@@ -1,4 +1,4 @@
-#ifndef _doyou_io_LoginServer_HPP_
+ï»¿#ifndef _doyou_io_LoginServer_HPP_
 #define _doyou_io_LoginServer_HPP_
 
 #include<regex>
@@ -76,7 +76,7 @@ namespace doyou {
 
 			void cs_msg_register(INetClient* client, neb::CJsonObject& msg)
 			{
-				//Í¨ÓÃ»ù´¡×Ö¶Î»ñÈ¡ÓëÑéÖ¤
+				//é€šç”¨åŸºç¡€å­—æ®µè·å–ä¸éªŒè¯
 				int clientId = 0;
 				if (!msg.Get("clientId", clientId))
 				{
@@ -91,7 +91,7 @@ namespace doyou {
 					return;
 				}
 
-				//µ±Ç°ÇëÇó×Ö¶Î»ñÈ¡ÓëÑéÖ¤
+				//å½“å‰è¯·æ±‚å­—æ®µè·å–ä¸éªŒè¯
 				std::string username;
 				std::string password;
 				std::string nickname;
@@ -108,7 +108,7 @@ namespace doyou {
 						client->resp_error(clientId, msgId, "<username> can not be empty!");
 						return;
 					}
-					//ÕıÔò±í´ïÊ½
+					//æ­£åˆ™è¡¨è¾¾å¼
 					std::regex reg1("^[0-9a-zA-Z]{6,16}$");
 					if (!regex_match(username, reg1))
 					{
@@ -128,7 +128,7 @@ namespace doyou {
 						return;
 					}
 
-					//ÕıÔò±í´ïÊ½
+					//æ­£åˆ™è¡¨è¾¾å¼
 					if (!regex_match(password, reg1))
 					{
 						client->resp_error(clientId, msgId, "<password> format is incorrect!");
@@ -167,19 +167,19 @@ namespace doyou {
 				}
 				//
 				CELLLog_Info("LoginServer::cs_msg_register: msgId=%d username=%s password=%s",msgId , username.c_str(), password.c_str());
-				//ÅĞ¶ÏÓÃ»§ÃûÊÇ·ñÒÑ´æÔÚ
+				//åˆ¤æ–­ç”¨æˆ·åæ˜¯å¦å·²å­˜åœ¨
 				if (_dbuser.has_username(username))
 				{
 					client->resp_error(clientId, msgId, "username already exists");
 					return;
 				}
-				//ÅĞ¶ÏêÇ³ÆÊÇ·ñÒÑ´æÔÚ
+				//åˆ¤æ–­æ˜µç§°æ˜¯å¦å·²å­˜åœ¨
 				if (_dbuser.has_nickname(nickname))
 				{
 					client->resp_error(clientId, msgId, "nickname already exists");
 					return;
 				}
-				//ĞÂÔöÓÃ»§Êı¾İ
+				//æ–°å¢ç”¨æˆ·æ•°æ®
 				auto userId = _dbuser.add_user(username, password, nickname, sex);
 				if (userId > 0)
 				{
@@ -194,7 +194,7 @@ namespace doyou {
 
 			void cs_msg_change_pw(INetClient* client, neb::CJsonObject& msg)
 			{
-				//Í¨ÓÃ»ù´¡×Ö¶Î»ñÈ¡ÓëÑéÖ¤
+				//é€šç”¨åŸºç¡€å­—æ®µè·å–ä¸éªŒè¯
 				int clientId = 0;
 				if (!msg.Get("clientId", clientId))
 				{
@@ -209,7 +209,7 @@ namespace doyou {
 					return;
 				}
 
-				//µ±Ç°ÇëÇó×Ö¶Î»ñÈ¡ÓëÑéÖ¤
+				//å½“å‰è¯·æ±‚å­—æ®µè·å–ä¸éªŒè¯
 				std::string username;
 				std::string password_old;
 				std::string password_new;
@@ -225,7 +225,7 @@ namespace doyou {
 						client->resp_error(clientId, msgId, "<username> can not be empty!");
 						return;
 					}
-					//ÕıÔò±í´ïÊ½
+					//æ­£åˆ™è¡¨è¾¾å¼
 					std::regex reg1("^[0-9a-zA-Z]{6,16}$");
 					if (!regex_match(username, reg1))
 					{
@@ -245,7 +245,7 @@ namespace doyou {
 						return;
 					}
 
-					//ÕıÔò±í´ïÊ½
+					//æ­£åˆ™è¡¨è¾¾å¼
 					if (!regex_match(password_old, reg1))
 					{
 						client->resp_error(clientId, msgId, "<password_old> format is incorrect!");
@@ -264,7 +264,7 @@ namespace doyou {
 						return;
 					}
 
-					//ÕıÔò±í´ïÊ½
+					//æ­£åˆ™è¡¨è¾¾å¼
 					if (!regex_match(password_new, reg1))
 					{
 						client->resp_error(clientId, msgId, "<password_new> format is incorrect!");
@@ -274,9 +274,9 @@ namespace doyou {
 				//
 				CELLLog_Info("LoginServer::cs_msg_change_pw: msgId=%d username=%s password_old=%s password_new=%s", msgId, username.c_str(), password_old.c_str(), password_new.c_str());
 				
-				//»ñÈ¡ÓÃ»§Êı¾İ
+				//è·å–ç”¨æˆ·æ•°æ®
 
-				//¸üĞÂÓÃ»§ÃÜÂë
+				//æ›´æ–°ç”¨æˆ·å¯†ç 
 
 			}
 

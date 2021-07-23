@@ -1,4 +1,4 @@
-#ifndef _doyou_io_INetServer_HPP_
+ï»¿#ifndef _doyou_io_INetServer_HPP_
 #define _doyou_io_INetServer_HPP_
 
 #include"TcpWebSocketServer.hpp"
@@ -32,7 +32,7 @@ namespace doyou {
 
 				if (clientState_join == pWSClient->state())
 				{	
-					//ÎÕÊÖ
+					//æ¡æ‰‹
 					if (!pWSClient->getRequestInfo())
 						return;
 
@@ -48,7 +48,7 @@ namespace doyou {
 						pWSClient->pong();
 					}
 					else {
-						//´¦ÀíÊı¾İÖ¡
+						//å¤„ç†æ•°æ®å¸§
 						OnNetMsgWS(pServer, pWSClient);
 					}
 				}
@@ -103,7 +103,7 @@ namespace doyou {
 					return;
 				}
 				
-				//·şÎñ¶ËÏìÓ¦
+				//æœåŠ¡ç«¯å“åº”
 				bool is_resp = false;
 				if (json.Get("is_resp", is_resp) && is_resp)
 				{
@@ -140,8 +140,8 @@ namespace doyou {
 					CELLLog_Error("not found key<%s>.", "is_req");
 					return;
 				}
-				//ÓÃ»§¶ËÇëÇó
-				//·şÎñ¶ËÇëÇó
+				//ç”¨æˆ·ç«¯è¯·æ±‚
+				//æœåŠ¡ç«¯è¯·æ±‚
 				if (is_req)
 				{
 					std::string cmd;
